@@ -100,10 +100,34 @@ body{
   display:inline-flex;
   align-items:center;
   justify-content:center;
+  position: relative;
+  z-index: 2;
 }
 
 .logo-icon.bolt{
   transform: translateY(1px);
+}
+
+.logo-stack{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.z-behind{
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 30px;
+  color: rgba(57,255,20,0.28);
+  letter-spacing: 0.12em;
+  z-index: 1;
 }
 
 .actions{
