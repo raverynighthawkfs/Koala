@@ -1,0 +1,1034 @@
+{
+	"pads": [
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 64206,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "0",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 9,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 64206,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 24543,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "3",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 14,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 24543,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 3583,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "11",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 20,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 3581,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 10353,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "13",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 21,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 10351,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 10594,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "14",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 22,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 10592,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 12403,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "8",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 18,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 12403,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 24543,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "9",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 14,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 24543,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 23667,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "12",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 11,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 23665,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 16050,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "2",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 19,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 16050,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 64180,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "4",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 25,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 64179,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 196519,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "10",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 7,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 196519,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 91126,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "15",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 8,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 91124,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 11231,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "1",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 12,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 11231,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 11205,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "5",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 26,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 11204,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 23971,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "6",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 27,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 23969,
+			"zoomStart": 0
+		},
+		{
+			"attack": 0.00011000000085914508,
+			"bus": -1,
+			"channel": 0,
+			"chokeGroup": 0,
+			"cyclicPeriod": 20,
+			"end": 138735,
+			"eq": {
+				"enabled": "false",
+				"hi": {
+					"freq": 8000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "highshelf"
+				},
+				"lo": {
+					"freq": 100.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "lowshelf"
+				},
+				"mid": {
+					"freq": 1000.0,
+					"gain": 0.0,
+					"q": 1.0,
+					"type": "peaking"
+				}
+			},
+			"hasLoopPoint": "false",
+			"label": "",
+			"loopPoint": -1,
+			"looping": "false",
+			"muted": false,
+			"oneshot": "false",
+			"pad": "7",
+			"pan": 0.5,
+			"pingpong": "false",
+			"pitch": 0.0,
+			"release": 0.0,
+			"reverse": "false",
+			"sampleId": 28,
+			"soloed": false,
+			"start": 0,
+			"stretch": 1,
+			"stretchLength": 0.0,
+			"stretching": false,
+			"tone": 0.0,
+			"type": "sample",
+			"vol": 1.0,
+			"xfade": 200,
+			"zoomEnd": 138733,
+			"zoomStart": 0
+		}
+	],
+	"samples": [
+		{
+			"id": 11,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:22:37",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Library/Containers/com.elf-audio.koala-mac/Data/tmp/fm-kick-6.flac",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 9,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:22:16",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Library/Containers/com.elf-audio.koala-mac/Data/tmp/fm-kick-1.flac",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 7,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:21:48",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Library/Containers/com.elf-audio.koala-mac/Data/tmp/Bass Ocho - RemiMZ.flac",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 12,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:22:52",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Library/Containers/com.elf-audio.koala-mac/Data/tmp/fm-hat-4.flac",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 21,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:28:32",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Music/Audio/DRUMS/HARDASSSHIT/Drum Rack Project/Samples/Processed/Consolidate/005 tom 1 [2025-07-28 095613].wav",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 22,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:28:55",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Music/Audio/DRUMS/HARDASSSHIT/Drum Rack Project/Samples/Processed/Crop/TOM2-samp [2025-07-28 100843].wav",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 25,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-08-29 21:14:41",
+				"musicalKey": "",
+				"originalPath": "",
+				"rootNote": "none",
+				"source": "Resampled",
+				"tags": []
+			}
+		},
+		{
+			"id": 18,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:27:49",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Music/Audio/DRUMS/HARDASSSHIT/Drum Rack Project/Samples/Processed/Consolidate/002 kick [2025-07-28 095223].wav",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 19,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:28:15",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Music/Audio/DRUMS/HARDASSSHIT/Drum Rack Project/Samples/Processed/Consolidate/003 snare [2025-07-28 095326].wav",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 8,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:22:03",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Library/Containers/com.elf-audio.koala-mac/Data/tmp/bass-jungle-1.flac",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 14,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:23:03",
+				"musicalKey": "",
+				"originalPath": "/Users/richavery/Library/Containers/com.elf-audio.koala-mac/Data/tmp/hat-1.flac",
+				"rootNote": "none",
+				"source": "Imported",
+				"tags": []
+			}
+		},
+		{
+			"id": 26,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-08-29 21:15:16",
+				"musicalKey": "",
+				"originalPath": "",
+				"rootNote": "none",
+				"source": "Resampled",
+				"tags": []
+			}
+		},
+		{
+			"id": 20,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-07-28 16:28:23",
+				"musicalKey": "",
+				"originalPath": "",
+				"rootNote": "none",
+				"source": "Recorded",
+				"tags": []
+			}
+		},
+		{
+			"id": 27,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-08-29 21:15:21",
+				"musicalKey": "",
+				"originalPath": "",
+				"rootNote": "none",
+				"source": "Resampled",
+				"tags": []
+			}
+		},
+		{
+			"id": 28,
+			"metadata": {
+				"bpm": 0.0,
+				"creationTime": "2025-08-29 21:15:28",
+				"musicalKey": "",
+				"originalPath": "",
+				"rootNote": "none",
+				"source": "Resampled",
+				"tags": []
+			}
+		}
+	]
+}

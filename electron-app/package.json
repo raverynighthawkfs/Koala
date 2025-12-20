@@ -1,0 +1,13 @@
+{
+  "name": "koala-electron",
+  "version": "0.1.0",
+  "description": "Minimal Electron wrapper to run the Koala sampler UI",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "node scripts/build.js"
+  },
+  "devDependencies": {
+    "electron": "^39.2.7"
+  }
+}

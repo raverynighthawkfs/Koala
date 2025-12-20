@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aizen Sampler</title>
+
+  <!-- Local CSS (same folder as this file) -->
+  <link rel="stylesheet" href="./sampler.css" />
+
+  <!-- Material Symbols (icons) -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- MDUI (Material 3 Web Components) -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.4/mdui.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/2.1.4/mdui.global.js"></script>
+</head>
+
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">Aizen Sampler</div>
+        <div class="brand-sub">Best Fucking Sampler in the World! Import your shitty samples and make your own beats!</div>
+      </div>
+
+      <div class="actions">
+        <mdui-button id="resumeAudio" variant="tonal">
+          <span class="material-symbols-outlined" slot="icon">play_arrow</span>
+          Resume Jam
+        </mdui-button>
+
+        <mdui-button id="stopAll" variant="filled">
+          <span class="material-symbols-outlined" slot="icon">stop</span>
+          Stop All
+        </mdui-button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title">PADS</div>
+          <div class="card-hint">Click-2-Trigger • Keyboard Keys: 1-4 (top row) / QWER / ASDF / ZXCV (bottom row) • Space = stop</div>
+        </div>
+
+        <div id="grid" class="grid" aria-label="Pad grid"></div>
+      </section>
+
+      <section class="card panel">
+        <div class="card-head">
+          <div class="card-title">Sample</div>
+          <div class="card-hint">Waveform & controls</div>
+        </div>
+
+        <div class="panel-body">
+          <canvas id="waveform" width="720" height="120"></canvas>
+
+          <div class="panel-buttons">
+            <button id="prevSample" class="mdui-btn" aria-label="Previous Sample">◀</button>
+            <button id="oneShot" class="mdui-btn" aria-pressed="false">ONE SHOT</button>
+            <button id="reverse" class="mdui-btn" aria-pressed="false">REVERSE</button>
+            <button id="loop" class="mdui-btn" aria-pressed="false">LOOP</button>
+            <button id="nextSample" class="mdui-btn" aria-label="Next Sample">▶</button>
+          </div>
+
+          <div class="panel-controls">
+            <div>
+              <label for="vol">VOL</label>
+              <input id="vol" type="range" min="0" max="2" step="0.01" value="1">
+            </div>
+            <div>
+              <label for="pitch">PITCH</label>
+              <input id="pitch" type="range" min="-12" max="12" step="0.1" value="0">
+            </div>
+            <div>
+              <label for="pan">PAN</label>
+              <input id="pan" type="range" min="-1" max="1" step="0.01" value="0">
+            </div>
+          </div>
+
+          <div class="panel-tank">
+            <div id="sampleTank">
+              <div class="tank-title">SAMPLE TANK</div>
+              <div id="sampleList"></div>
+            </div>
+          </div>
+
+          <pre id="meta" class="meta">Loading…</pre>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

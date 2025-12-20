@@ -1,0 +1,73 @@
+{
+	"buses": {
+		"strawberry": [
+			{
+				"name": "CUTTER",
+				"value": 0.0
+			},
+			{
+				"name": "REVERSE",
+				"value": 0.0
+			},
+			{
+				"name": "DUB",
+				"value": 0.0
+			},
+			{
+				"name": "TEMPO DELAY",
+				"value": 0.0
+			},
+			{
+				"name": "TALKBOX",
+				"value": 0.0
+			},
+			{
+				"name": "VIBROFLANGE",
+				"value": 0.5
+			},
+			{
+				"name": "DIRTY",
+				"value": 0.0
+			},
+			{
+				"name": "COMPRESSOR",
+				"value": 0.0
+			}
+		],
+		"vanilla": [
+			{
+				"name": "CRUSH",
+				"value": 0.0
+			},
+			{
+				"name": "PITCH",
+				"value": 0.5
+			},
+			{
+				"name": "COMB",
+				"value": 0.0
+			},
+			{
+				"name": "RING",
+				"value": 0.0
+			},
+			{
+				"name": "REVERB",
+				"value": 0.0
+			},
+			{
+				"name": "STUTTER",
+				"value": 0.0
+			},
+			{
+				"name": "GATE",
+				"value": 0.0
+			},
+			{
+				"name": "FILTER",
+				"value": 0.5
+			}
+		]
+	},
+	"hold": false
+}

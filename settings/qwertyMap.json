@@ -1,0 +1,210 @@
+{
+	"mappings": [
+		{
+			"event": "NEXT_SECTION",
+			"key": "tab"
+		},
+		{
+			"event": "PREV_SECTION",
+			"key": "shift-tab"
+		},
+		{
+			"event": "TOGGLE_PLAYING",
+			"key": " "
+		},
+		{
+			"event": "PRESS_EDIT",
+			"key": ","
+		},
+		{
+			"event": "SEQUENCE_LENGTH_DECREMENT",
+			"key": "-"
+		},
+		{
+			"event": "TOGGLE_KEYBOARD",
+			"key": "/"
+		},
+		{
+			"event": "TOGGLE_RECORDING",
+			"key": "0"
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "1",
+			"parameter": 0
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "2",
+			"parameter": 1
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "3",
+			"parameter": 2
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "4",
+			"parameter": 3
+		},
+		{
+			"event": "SEQUENCE_LENGTH_INCREMENT",
+			"key": "="
+		},
+		{
+			"event": "SAMPLE_PREV_BANK",
+			"key": "["
+		},
+		{
+			"event": "SAMPLE_NEXT_BANK",
+			"key": "]"
+		},
+		{
+			"event": "SEQUENCE_DOUBLE_UP",
+			"key": "_"
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "a",
+			"parameter": 8
+		},
+		{
+			"event": "PRESS_MUTE",
+			"key": "b"
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "c",
+			"parameter": 14
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "d",
+			"parameter": 10
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "e",
+			"parameter": 6
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "f",
+			"parameter": 11
+		},
+		{
+			"event": "SELECT_SEQUENCE",
+			"key": "h",
+			"parameter": 4
+		},
+		{
+			"event": "SELECT_SEQUENCE",
+			"key": "i",
+			"parameter": 2
+		},
+		{
+			"event": "SELECT_SEQUENCE",
+			"key": "j",
+			"parameter": 5
+		},
+		{
+			"event": "SELECT_SEQUENCE",
+			"key": "k",
+			"parameter": 6
+		},
+		{
+			"event": "SELECT_SEQUENCE",
+			"key": "l",
+			"parameter": 7
+		},
+		{
+			"event": "TOGGLE_METRONOME",
+			"key": "m"
+		},
+		{
+			"event": "PRESS_SOLO",
+			"key": "n"
+		},
+		{
+			"event": "SELECT_SEQUENCE",
+			"key": "o",
+			"parameter": 3
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "q",
+			"parameter": 4
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "r",
+			"parameter": 7
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "s",
+			"parameter": 9
+		},
+		{
+			"event": "SELECT_SEQUENCE",
+			"key": "u",
+			"parameter": 1
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "v",
+			"parameter": 15
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "w",
+			"parameter": 5
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "x",
+			"parameter": 13
+		},
+		{
+			"event": "SELECT_SEQUENCE",
+			"key": "y",
+			"parameter": 0
+		},
+		{
+			"event": "PRESS_SAMPLE_PAD",
+			"key": "z",
+			"parameter": 12
+		},
+		{
+			"event": "SEQUENCE_PREV_BANK",
+			"key": "{"
+		},
+		{
+			"event": "SEQUENCE_NEXT_BANK",
+			"key": "}"
+		},
+		{
+			"event": "DELETE_CURR_SAMPLE",
+			"key": "delete"
+		},
+		{
+			"event": "PREV_SAMPLE_PAD_GRID",
+			"key": "left"
+		},
+		{
+			"event": "NEXT_SAMPLE_PAD_GRID",
+			"key": "right"
+		},
+		{
+			"event": "SHOW_MEDIA_BROWSER",
+			"key": "down"
+		},
+		{
+			"event": "PRESS_EDIT",
+			"key": "shift"
+		}
+	],
+	"type": "qwertyMap",
+	"version": "1.4120 (6261)"
+}
