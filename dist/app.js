@@ -130,6 +130,13 @@ function updatePadButtonLabel(padIndex) {
   if (sub) sub.textContent = sampleLabel(pad.sampleId);
 }
 
+function pingVuActivity() {
+  if (!vuWindow) return;
+  vuWindow.classList.add('active');
+  if (vuTimeout) clearTimeout(vuTimeout);
+  vuTimeout = setTimeout(() => vuWindow.classList.remove('active'), 5000);
+}
+
 async function playPad(padIndex, padConfig) {
   if (!padConfig || padConfig.sampleId == null) {
     meta.textContent = 'Choose a sample for this pad first.';
@@ -160,6 +167,7 @@ async function playPad(padIndex, padConfig) {
 
   activeByPad.set(padIndex, { src, gain: nodes.gain, pan: nodes.pan });
   src.start();
+  pingVuActivity();
   meta.textContent = `Pad ${padIndex} ▶ ${sampleLabel(sampleId)} | vol ${Number(padConfig.vol ?? 1).toFixed(2)} | pitch ${Number(padConfig.pitch ?? 0)} st | pan ${Number(padConfig.pan ?? 0)}`;
 }
 
@@ -245,6 +253,8 @@ const inputVol = document.getElementById('vol');
 const inputPitch = document.getElementById('pitch');
 const inputPan = document.getElementById('pan');
 const sampleListEl = document.getElementById('sampleList');
+const vuWindow = document.getElementById('vuWindow');
+let vuTimeout = null;
 
 function drawWaveform(buffer, canvas = waveformCanvas) {
   if (!buffer || !waveCtx || !canvas) return;
