@@ -214,6 +214,12 @@ body{
   100% { height: 18px; }
 }
 
+@keyframes ghost-pulse{
+  0% { transform: scale(0.99); opacity: 0.35; }
+  50% { transform: scale(1.02); opacity: 0.5; }
+  100% { transform: scale(0.99); opacity: 0.35; }
+}
+
 .actions{
   display:flex;
   gap: 10px;
@@ -261,6 +267,7 @@ body{
   border-radius: calc(var(--radius) - 6px);
   background: rgba(10,16,22,0.82);
   box-shadow: inset -10px -10px 24px rgba(255,255,255,0.02), inset 12px 12px 22px rgba(0,0,0,0.7);
+  position: relative;
 }
 
 .pad{
@@ -279,6 +286,8 @@ body{
   justify-content: center;
   gap: 6px;
   text-align: left;
+  position: relative;
+  overflow: hidden;
 }
 
 .pad:hover{
@@ -293,6 +302,24 @@ body{
   border-color: #7dff5d;
   background: linear-gradient(145deg, rgba(24,66,54,0.92), rgba(6,20,12,0.98));
   box-shadow: -8px -8px 22px rgba(255,255,255,0.08), 14px 14px 26px rgba(0,0,0,0.62), 0 0 38px rgba(57,255,20,0.45);
+}
+
+.pad::before{
+  content:'';
+  position:absolute;
+  inset:-10px;
+  border: 2px dashed rgba(57,255,20,0.35);
+  border-radius: calc(var(--radius) + 6px);
+  filter: drop-shadow(0 0 10px rgba(57,255,20,0.18));
+  opacity: 0.4;
+  animation: ghost-pulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.pad:hover::before,
+.pad[aria-selected="true"]::before{
+  border-color: rgba(125,255,93,0.8);
+  opacity: 0.7;
 }
 
 .padTop{ font-weight: 800; }
