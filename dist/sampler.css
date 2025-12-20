@@ -94,10 +94,11 @@ body{
   font-weight: 900;
   letter-spacing: 0.14em;
   color: var(--text);
+  text-shadow: 0 0 1px #ffffff, 0 0 3px rgba(255,255,255,0.4);
 }
 
 .logo-text.logo-accent{
-  color: #bbe2bb;
+  color: #90d090;
 }
 
 .logo-icon{
@@ -133,7 +134,7 @@ body{
   justify-content: center;
   font-weight: 900;
   font-size: 46px;
-  color: rgba(57,255,20,0.4);
+  color: rgb(122 211 106 / 77%);
   letter-spacing: 0.12em;
   z-index: 1;
 }
