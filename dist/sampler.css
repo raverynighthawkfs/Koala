@@ -1,7 +1,7 @@
 /* sampler.css — Material-ish layout for the sampler */
 
 :root{
-  --bg: #0a0c10;
+  --bg: #000000;
   --surface: rgba(11,16,22,0.88);
   --surface-soft: rgba(13,18,24,0.72);
   --stroke: rgba(255,255,255,0.08);
@@ -22,9 +22,9 @@ body{
   color: var(--text);
   background-color: var(--bg);
   background-image:
-    radial-gradient(900px 680px at 15% -20%, rgba(80,220,180,0.18), transparent 60%),
-    radial-gradient(980px 620px at 120% 0%, rgba(90,140,255,0.14), transparent 58%),
-    radial-gradient(900px 700px at 50% 120%, rgba(255,90,140,0.08), transparent 60%),
+    radial-gradient(600px 520px at 15% -20%, rgba(80,220,180,0.18), transparent 60%),
+    radial-gradient(600px 520px at 120% 0%, rgba(90,140,255,0.14), transparent 58%),
+    radial-gradient(600px 520px at 50% 120%, rgba(255,90,140,0.08), transparent 60%),
     url('./TALL_WP32.png');
   background-size: cover;
   background-attachment: fixed;
@@ -35,9 +35,9 @@ body{
 @media (orientation: landscape){
   body{
     background-image:
-      radial-gradient(900px 680px at 15% -20%, rgba(80,220,180,0.18), transparent 60%),
-      radial-gradient(980px 620px at 120% 0%, rgba(90,140,255,0.14), transparent 58%),
-      radial-gradient(900px 700px at 50% 120%, rgba(255,90,140,0.08), transparent 60%),
+      radial-gradient(600px 520px at 15% -20%, rgba(80,220,180,0.18), transparent 60%),
+      radial-gradient(600px 520px at 120% 0%, rgba(90,140,255,0.14), transparent 58%),
+      radial-gradient(600px 520px at 50% 120%, rgba(255,90,140,0.08), transparent 60%),
       url('./DARK_WP3.png');
   }
 }
@@ -45,9 +45,9 @@ body{
 @media (orientation: portrait){
   body{
     background-image:
-      radial-gradient(900px 680px at 15% -20%, rgba(80,220,180,0.18), transparent 60%),
-      radial-gradient(980px 620px at 120% 0%, rgba(90,140,255,0.14), transparent 58%),
-      radial-gradient(900px 700px at 50% 120%, rgba(255,90,140,0.08), transparent 60%),
+      radial-gradient(600px 520px at 15% -20%, rgba(80,220,180,0.18), transparent 60%),
+      radial-gradient(600px 520px at 120% 0%, rgba(90,140,255,0.14), transparent 58%),
+      radial-gradient(600px 520px at 50% 120%, rgba(255,90,140,0.08), transparent 60%),
       url('./TALL_WP32.png');
   }
 }
@@ -441,6 +441,7 @@ mdui-button, .mdui-btn {
   border-radius: 18px 18px 0 0;
   box-shadow: 0 -16px 26px rgba(0,0,0,0.65), 0 0 22px rgba(57,255,20,0.18);
   z-index: 50;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   pointer-events: none;
 }
