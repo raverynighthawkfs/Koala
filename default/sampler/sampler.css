@@ -92,6 +92,11 @@ body{
 .logo-text{
   font-weight: 900;
   letter-spacing: 0.14em;
+  color: var(--text);
+}
+
+.logo-text.logo-accent{
+  color: #bbe2bb;
 }
 
 .logo-icon{
@@ -106,6 +111,8 @@ body{
 
 .logo-icon.bolt{
   transform: translateY(1px);
+  font-size: 40px;
+  letter-spacing: 2.2px;
 }
 
 .logo-stack{
@@ -124,8 +131,8 @@ body{
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  font-size: 30px;
-  color: rgba(57,255,20,0.28);
+  font-size: 46px;
+  color: rgba(57,255,20,0.4);
   letter-spacing: 0.12em;
   z-index: 1;
 }
