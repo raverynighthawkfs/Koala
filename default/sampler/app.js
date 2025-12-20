@@ -2,6 +2,10 @@ const grid = document.getElementById('grid');
 const meta = document.getElementById('meta');
 const btnStopAll = document.getElementById('stopAll');
 const btnResume = document.getElementById('resumeAudio');
+const sampleDrawer = document.getElementById('sampleDrawer');
+const btnOpenSampleDrawer = document.getElementById('openSampleDrawer');
+const btnCloseSampleDrawer = document.getElementById('closeSampleDrawer');
+const drawerHandle = document.getElementById('drawerHandle');
 
 // WebAudio
 const audio = new (window.AudioContext || window.webkitAudioContext)();
@@ -137,6 +141,13 @@ function pingVuActivity() {
   vuTimeout = setTimeout(() => vuWindow.classList.remove('active'), 5000);
 }
 
+function setSampleDrawer(open) {
+  if (!sampleDrawer) return;
+  sampleDrawer.classList.toggle('open', open);
+  sampleDrawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+  if (open && drawerTimer) { clearTimeout(drawerTimer); drawerTimer = null; }
+}
+
 async function playPad(padIndex, padConfig) {
   if (!padConfig || padConfig.sampleId == null) {
     meta.textContent = 'Choose a sample for this pad first.';
@@ -255,6 +266,7 @@ const inputPan = document.getElementById('pan');
 const sampleListEl = document.getElementById('sampleList');
 const vuWindow = document.getElementById('vuWindow');
 let vuTimeout = null;
+let drawerTimer = null;
 
 function drawWaveform(buffer, canvas = waveformCanvas) {
   if (!buffer || !waveCtx || !canvas) return;
@@ -432,6 +444,11 @@ btnResume.addEventListener('click', async () => {
     meta.textContent = `ERROR: ${err?.message ?? String(err)}`;
   }
 });
+
+if (btnOpenSampleDrawer) btnOpenSampleDrawer.addEventListener('click', () => setSampleDrawer(true));
+if (btnCloseSampleDrawer) btnCloseSampleDrawer.addEventListener('click', () => setSampleDrawer(false));
+if (drawerHandle) drawerHandle.addEventListener('click', () => setSampleDrawer(!sampleDrawer.classList.contains('open')));
+window.addEventListener('keyup', (e) => { if (e.key === 'Escape') setSampleDrawer(false); });
 
 // Keyboard map
 const keyMap = new Map([

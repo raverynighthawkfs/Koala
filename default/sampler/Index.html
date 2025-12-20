@@ -115,16 +115,31 @@
           </div>
 
           <div class="panel-tank">
-            <div id="sampleTank">
-              <div class="tank-title">SAMPLE TANK</div>
-              <div id="sampleList"></div>
-            </div>
+            <button id="openSampleDrawer" class="mdui-btn" type="button">
+              <span class="material-symbols-outlined" slot="icon">unfold_more</span>
+              Sample Tank
+            </button>
           </div>
 
           <pre id="meta" class="meta">Loading…</pre>
         </div>
       </section>
     </main>
+
+    <div id="sampleDrawer" class="sample-drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div class="drawer-title">Sample Tank</div>
+        <button id="closeSampleDrawer" class="drawer-icon" aria-label="Close sample drawer">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="drawer-body">
+        <button id="drawerHandle" class="drawer-handle" aria-label="Toggle sample drawer">
+          <span class="material-symbols-outlined">unfold_less</span>
+        </button>
+        <div id="sampleList" class="drawer-list"></div>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="./app.js"></script>
