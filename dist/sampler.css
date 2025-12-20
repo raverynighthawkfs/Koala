@@ -93,13 +93,18 @@ body{
 .logo-text{
   font-weight: 900;
   letter-spacing: 0.14em;
-  color: var(--text);
+  color: #ffffff;
   text-shadow: 0 0 1px #ffffff, 0 0 3px rgba(255,255,255,0.4);
+  font-size: 34px;
 }
 
 .logo-text.logo-accent{
-  color: #90d090;
+  color: #ffffff;
+  font-size: 38px;
 }
+
+.logo-text.logo-A{ font-size: 34px; }
+.logo-text.logo-N{ font-size: 34px; }
 
 .logo-icon{
   font-size: 30px;
@@ -109,6 +114,8 @@ body{
   justify-content:center;
   position: relative;
   z-index: 2;
+  -webkit-text-stroke-width: medium;
+  -webkit-text-stroke-color: #008000a8;
 }
 
 .logo-icon.bolt{
