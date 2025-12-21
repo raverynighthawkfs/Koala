@@ -27,10 +27,18 @@ const activeByPad = new Map();
 
 let selectedPadIndex = null;
 const padKeyHints = ['1','2','3','4','Q','W','E','R','A','S','D','F','Z','X','C','V'];
+const row1Keys = ['z','x','c','v','b','n','m'];
+const row2Keys = ['a','s','d','f','g','h','j','k','l'];
+const row3Keys = ['q','w','e','r','t','y','u','i','o','p'];
+const row1Notes = ['C3','D3','E3','F3','G3','A3','B3'];
+const row2Notes = ['C4','D4','E4','F4','G4','A4','B4','C5','D5'];
+const row3Notes = ['C#3','D#3','F#3','G#3','A#3','C#4','D#4','F#4','G#4','A#4'];
 const notesLayout = [
-  { name: 'C2', black: false }, { name: 'C#2', black: true }, { name: 'D2', black: false }, { name: 'D#2', black: true }, { name: 'E2', black: false }, { name: 'F2', black: false }, { name: 'F#2', black: true }, { name: 'G2', black: false }, { name: 'G#2', black: true }, { name: 'A2', black: false }, { name: 'A#2', black: true }, { name: 'B2', black: false },
-  { name: 'C3', black: false }, { name: 'C#3', black: true }, { name: 'D3', black: false }, { name: 'D#3', black: true }, { name: 'E3', black: false }, { name: 'F3', black: false }, { name: 'F#3', black: true }, { name: 'G3', black: false }, { name: 'G#3', black: true }, { name: 'A3', black: false }, { name: 'A#3', black: true }, { name: 'B3', black: false }
+  ...row1Notes.map((name, i) => ({ name, black: name.includes('#'), key: row1Keys[i], row: 1 })),
+  ...row2Notes.map((name, i) => ({ name, black: name.includes('#'), key: row2Keys[i], row: 2 })),
+  ...row3Notes.map((name, i) => ({ name, black: name.includes('#'), key: row3Keys[i], row: 3 }))
 ];
+const pianoKeyMap = new Map(notesLayout.map((n, idx) => [n.key, idx]));
 const scales = {
   'chromatic':    [0,1,2,3,4,5,6,7,8,9,10,11],
   'major':        [0,2,4,5,7,9,11],
@@ -190,6 +198,8 @@ function buildPiano(scale = 'chromatic') {
   notesLayout.forEach((note, idx) => {
     const el = document.createElement('div');
     el.className = 'piano-key' + (note.black ? ' black' : '');
+    el.dataset.row = String(note.row || 1);
+    el.dataset.key = note.key || '';
     const semitone = noteIndexFromName(note.name) % 12;
     el.dataset.note = note.name;
     el.dataset.pad = String(idx % 16);
@@ -533,6 +543,22 @@ const keyMap = new Map([
 ]);
 
 window.addEventListener('keydown', async (e) => {
+  if (pianoOverlay && pianoOverlay.classList.contains('open')) {
+    const k = (e.key || '').toLowerCase();
+    if (pianoKeyMap.has(k)) {
+      e.preventDefault();
+      const idx = pianoKeyMap.get(k);
+      const keyEl = pianoKeysEl?.children?.[idx];
+      const padIndex = idx % 16;
+      const padConfig = pads.get(padIndex) ?? ensurePadExists(padIndex);
+      selectPadButton(padIndex);
+      showPadDetails(padIndex);
+      keyEl?.classList.add('active');
+      setTimeout(() => keyEl?.classList.remove('active'), 150);
+      try { await playPad(padIndex, padConfig); } catch (err) { meta.textContent = `ERROR: ${err?.message ?? String(err)}`; }
+      return;
+    }
+  }
   if (e.repeat) return;
   if (e.code === 'Space') { e.preventDefault(); stopAll(); return; }
   const t = e.target;
