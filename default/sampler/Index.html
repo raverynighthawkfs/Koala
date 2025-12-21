@@ -50,6 +50,10 @@
           <span class="material-symbols-outlined" slot="icon">play_arrow</span>
           Resume Jam
         </mdui-button>
+        <mdui-button id="pianoMode" variant="tonal">
+          <span class="material-symbols-outlined" slot="icon">piano</span>
+          Keys
+        </mdui-button>
 
         <mdui-button id="stopAll" variant="filled">
           <span class="material-symbols-outlined" slot="icon">stop</span>
@@ -138,6 +142,32 @@
           <span class="material-symbols-outlined">unfold_less</span>
         </button>
         <div id="sampleList" class="drawer-list"></div>
+      </div>
+    </div>
+
+    <div id="pianoOverlay" class="piano-overlay" aria-hidden="true">
+      <div class="piano-header">
+        <div class="piano-title">
+          <span class="material-symbols-outlined">piano</span>
+          Keyboard
+        </div>
+        <div class="piano-controls">
+          <label for="scaleMode">Scale</label>
+          <select id="scaleMode">
+            <option value="chromatic">Chromatic</option>
+            <option value="major">Major</option>
+            <option value="minor">Minor</option>
+            <option value="harmonic-minor">Harmonic Minor</option>
+            <option value="pentatonic">Pentatonic</option>
+            <option value="whole-tone">Whole Tone</option>
+          </select>
+          <button id="closePianoOverlay" class="drawer-icon" aria-label="Close keyboard">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="piano-body">
+        <div id="pianoKeys" class="piano-keys"></div>
       </div>
     </div>
   </div>

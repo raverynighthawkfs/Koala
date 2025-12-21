@@ -6,6 +6,12 @@ const sampleDrawer = document.getElementById('sampleDrawer');
 const btnOpenSampleDrawer = document.getElementById('openSampleDrawer');
 const btnCloseSampleDrawer = document.getElementById('closeSampleDrawer');
 const drawerHandle = document.getElementById('drawerHandle');
+const pianoOverlay = document.getElementById('pianoOverlay');
+const btnPianoMode = document.getElementById('pianoMode');
+const btnClosePianoOverlay = document.getElementById('closePianoOverlay');
+const pianoKeysEl = document.getElementById('pianoKeys');
+const scaleModeSelect = document.getElementById('scaleMode');
+const vuWindow = document.getElementById('vuWindow');
 
 // WebAudio
 const audio = new (window.AudioContext || window.webkitAudioContext)();
@@ -148,6 +154,54 @@ function setSampleDrawer(open) {
   if (open && drawerTimer) { clearTimeout(drawerTimer); drawerTimer = null; }
 }
 
+function setPianoOverlay(open) {
+  if (!pianoOverlay) return;
+  pianoOverlay.classList.toggle('open', open);
+  pianoOverlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+  if (open && pianoTimer) { clearTimeout(pianoTimer); pianoTimer = null; }
+}
+
+function noteIndexFromName(name) {
+  const match = name.match(/^([A-G])(#?)(\d)$/);
+  if (!match) return 0;
+  const baseOrder = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const note = match[1] + (match[2] || '');
+  const octave = Number(match[3]);
+  const semitone = baseOrder.indexOf(note);
+  return octave * 12 + semitone;
+}
+
+function buildPiano(scale = 'chromatic') {
+  if (!pianoKeysEl) return;
+  pianoKeysEl.innerHTML = '';
+  const allowed = new Set(scales[scale] || scales.chromatic);
+  notesLayout.forEach((note, idx) => {
+    const el = document.createElement('div');
+    el.className = 'piano-key' + (note.black ? ' black' : '');
+    const semitone = noteIndexFromName(note.name) % 12;
+    el.dataset.note = note.name;
+    el.dataset.pad = String(idx % 16);
+    if (allowed.has(semitone)) {
+      el.addEventListener('click', async () => {
+        const padIndex = idx % 16;
+        const padConfig = pads.get(padIndex) ?? ensurePadExists(padIndex);
+        selectPadButton(padIndex);
+        showPadDetails(padIndex);
+        el.classList.add('active');
+        setTimeout(() => el.classList.remove('active'), 150);
+        try { await playPad(padIndex, padConfig); } catch (err) { meta.textContent = `ERROR: ${err?.message ?? String(err)}`; }
+      });
+    } else {
+      el.classList.add('disabled');
+    }
+    const label = document.createElement('div');
+    label.className = 'note-label';
+    label.textContent = note.name;
+    el.appendChild(label);
+    pianoKeysEl.appendChild(el);
+  });
+}
+
 async function playPad(padIndex, padConfig) {
   if (!padConfig || padConfig.sampleId == null) {
     meta.textContent = 'Choose a sample for this pad first.';
@@ -267,6 +321,19 @@ const sampleListEl = document.getElementById('sampleList');
 const vuWindow = document.getElementById('vuWindow');
 let vuTimeout = null;
 let drawerTimer = null;
+let pianoTimer = null;
+const notesLayout = [
+  { name: 'C2', black: false }, { name: 'C#2', black: true }, { name: 'D2', black: false }, { name: 'D#2', black: true }, { name: 'E2', black: false }, { name: 'F2', black: false }, { name: 'F#2', black: true }, { name: 'G2', black: false }, { name: 'G#2', black: true }, { name: 'A2', black: false }, { name: 'A#2', black: true }, { name: 'B2', black: false },
+  { name: 'C3', black: false }, { name: 'C#3', black: true }, { name: 'D3', black: false }, { name: 'D#3', black: true }, { name: 'E3', black: false }, { name: 'F3', black: false }, { name: 'F#3', black: true }, { name: 'G3', black: false }, { name: 'G#3', black: true }, { name: 'A3', black: false }, { name: 'A#3', black: true }, { name: 'B3', black: false }
+];
+const scales = {
+  'chromatic':    [0,1,2,3,4,5,6,7,8,9,10,11],
+  'major':        [0,2,4,5,7,9,11],
+  'minor':        [0,2,3,5,7,8,10],
+  'harmonic-minor':[0,2,3,5,7,8,11],
+  'pentatonic':   [0,2,4,7,9],
+  'whole-tone':   [0,2,4,6,8,10]
+};
 
 function drawWaveform(buffer, canvas = waveformCanvas) {
   if (!buffer || !waveCtx || !canvas) return;
@@ -337,7 +404,7 @@ async function renderSampleList(sampleIds) {
   const ids = (sampleIds && sampleIds.length ? sampleIds : allSampleIds);
   for (const sid of ids) {
     const c = document.createElement('canvas');
-    c.width = 120; c.height = 40; c.style.width = '100%'; c.style.height = 'auto';
+    c.width = 72; c.height = 24; c.style.width = '100%'; c.style.height = 'auto';
     c.dataset.sampleId = sid;
     const wrap = document.createElement('div');
     wrap.style.cursor = 'pointer';
@@ -444,10 +511,19 @@ btnResume.addEventListener('click', async () => {
     meta.textContent = `ERROR: ${err?.message ?? String(err)}`;
   }
 });
+
 if (btnOpenSampleDrawer) btnOpenSampleDrawer.addEventListener('click', () => setSampleDrawer(true));
 if (btnCloseSampleDrawer) btnCloseSampleDrawer.addEventListener('click', () => setSampleDrawer(false));
 if (drawerHandle) drawerHandle.addEventListener('click', () => setSampleDrawer(!sampleDrawer.classList.contains('open')));
-window.addEventListener('keyup', (e) => { if (e.key === 'Escape') setSampleDrawer(false); });
+window.addEventListener('keyup', (e) => {
+  if (e.key === 'Escape') {
+    setSampleDrawer(false);
+    setPianoOverlay(false);
+  }
+});
+if (btnPianoMode) btnPianoMode.addEventListener('click', () => { setPianoOverlay(true); buildPiano(scaleModeSelect?.value || 'chromatic'); });
+if (btnClosePianoOverlay) btnClosePianoOverlay.addEventListener('click', () => setPianoOverlay(false));
+if (scaleModeSelect) scaleModeSelect.addEventListener('change', () => buildPiano(scaleModeSelect.value));
 
 // Keyboard map
 const keyMap = new Map([
