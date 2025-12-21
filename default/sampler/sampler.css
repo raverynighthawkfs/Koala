@@ -384,6 +384,10 @@ body{
   background: rgba(0,0,0,0.35);
   border-radius: 12px;
 }
+.piano-keys canvas{
+  width: 100% !important;
+  height: 100% !important;
+}
 .piano-key{
   height: 40vh;
   flex: 1;

@@ -190,6 +190,7 @@ function noteIndexFromName(name) {
 function ensureQwerty(scale = 'chromatic', force = false) {
   if (!pianoKeysEl || !window.JZZ || !JZZ.input || !JZZ.input.Qwerty) {
     console.warn('Qwerty keyboard unavailable (JZZ.input.Qwerty missing).');
+    if (pianoKeysEl) pianoKeysEl.textContent = 'Keyboard unavailable — JZZ.input.Qwerty not loaded.';
     return;
   }
   if (force && qwertyInput) {
