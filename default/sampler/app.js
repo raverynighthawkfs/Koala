@@ -196,23 +196,27 @@ function ensureQwerty(scale = 'chromatic', force = false) {
     try { qwertyInput.disconnect(); } catch {}
     qwertyInput = null;
   }
-  const w = pianoKeysEl.clientWidth || Math.round(window.innerWidth * 0.9) || 900;
-  const h = pianoKeysEl.clientHeight || Math.round(window.innerHeight * 0.45) || 360;
+  // force dimensions so the responsive keyboard renders
+  const w = Math.max(900, pianoKeysEl.clientWidth || Math.round(window.innerWidth * 0.9) || 900);
+  const h = Math.max(360, pianoKeysEl.clientHeight || Math.round(window.innerHeight * 0.5) || 360);
   if (!qwertyInput) {
     pianoKeysEl.innerHTML = '';
     qwertyInput = JZZ.input.Qwerty({
       at: pianoKeysEl,
-      l: 24,
-      t: 0,
       w,
       h,
       from: 'C3',
-      to: 'B4',
-      color: '#0c0f16',
-      colorhi: '#7dff5d',
-      colorlo: '#0c0f16',
+      to: 'C5',
+      ww: 48, // white key width
+      wb: 32, // white key border radius
+      bw: 32, // black key width
+      bb: 24, // black key border radius
+      color: '#0b1016',
+      colorhi: '#0b1016',
+      colorlo: '#0b1016',
       stroke: '#39ff14',
-      scale: scale
+      hl: '#7dff5d',
+      scale
     });
   }
   try {
@@ -227,7 +231,7 @@ function buildPiano(scale = 'chromatic') {
   // rebuild after overlay is visible to get correct dimensions
   requestAnimationFrame(() => ensureQwerty(scale, true));
   // double-tap after paint in case dimensions were 0 on first pass
-  setTimeout(() => ensureQwerty(scale, true), 80);
+  setTimeout(() => ensureQwerty(scale, true), 120);
 }
 
 function initMidi() {

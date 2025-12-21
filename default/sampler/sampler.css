@@ -381,6 +381,8 @@ body{
   position: relative;
   height: 45vh;
   min-height: 320px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 12px;
 }
 .piano-key{
   height: 40vh;
