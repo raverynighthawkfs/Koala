@@ -11,6 +11,11 @@ const btnPianoMode = document.getElementById('pianoMode');
 const btnClosePianoOverlay = document.getElementById('closePianoOverlay');
 const pianoKeysEl = document.getElementById('pianoKeys');
 const scaleModeSelect = document.getElementById('scaleMode');
+const midiSystemSel = document.getElementById('midiSystem');
+const bankMsbSel = document.getElementById('bankMsb');
+const bankLsbSel = document.getElementById('bankLsb');
+const programSelect = document.getElementById('programSelect');
+const midiOutSelect = document.getElementById('midiOutSelect');
 const vuWindow = document.getElementById('vuWindow');
 
 // WebAudio
@@ -27,18 +32,9 @@ const activeByPad = new Map();
 
 let selectedPadIndex = null;
 const padKeyHints = ['1','2','3','4','Q','W','E','R','A','S','D','F','Z','X','C','V'];
-const row1Keys = ['z','x','c','v','b','n','m'];
-const row2Keys = ['a','s','d','f','g','h','j','k','l'];
-const row3Keys = ['q','w','e','r','t','y','u','i','o','p'];
-const row1Notes = ['C3','D3','E3','F3','G3','A3','B3'];
-const row2Notes = ['C4','D4','E4','F4','G4','A4','B4','C5','D5'];
-const row3Notes = ['C#3','D#3','F#3','G#3','A#3','C#4','D#4','F#4','G#4','A#4'];
-const notesLayout = [
-  ...row1Notes.map((name, i) => ({ name, black: name.includes('#'), key: row1Keys[i], row: 1 })),
-  ...row2Notes.map((name, i) => ({ name, black: name.includes('#'), key: row2Keys[i], row: 2 })),
-  ...row3Notes.map((name, i) => ({ name, black: name.includes('#'), key: row3Keys[i], row: 3 }))
-];
-const pianoKeyMap = new Map(notesLayout.map((n, idx) => [n.key, idx]));
+const notesLayout = [];
+const pianoKeyMap = new Map();
+const knobFaces = document.querySelectorAll('.knob-face');
 const scales = {
   'chromatic':    [0,1,2,3,4,5,6,7,8,9,10,11],
   'major':        [0,2,4,5,7,9,11],
@@ -191,37 +187,93 @@ function noteIndexFromName(name) {
   return octave * 12 + semitone;
 }
 
+function ensureQwerty(scale = 'chromatic', force = false) {
+  if (!pianoKeysEl || !window.JZZ || !JZZ.input || !JZZ.input.Qwerty) return;
+  if (force && qwertyInput) {
+    try { qwertyInput.disconnect(); } catch {}
+    qwertyInput = null;
+  }
+  const w = pianoKeysEl.clientWidth || Math.round(window.innerWidth * 0.9) || 900;
+  const h = pianoKeysEl.clientHeight || Math.round(window.innerHeight * 0.45) || 360;
+  if (!qwertyInput) {
+    pianoKeysEl.innerHTML = '';
+    qwertyInput = JZZ.input.Qwerty({
+      at: pianoKeysEl,
+      l: 24,
+      t: 0,
+      w,
+      h,
+      from: 'C3',
+      to: 'B4',
+      color: '#0c0f16',
+      colorhi: '#7dff5d',
+      colorlo: '#0c0f16',
+      stroke: '#39ff14',
+      scale: scale
+    });
+  }
+  try {
+    qwertyInput.disconnect();
+    qwertyInput.connect(initMidi());
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 function buildPiano(scale = 'chromatic') {
-  if (!pianoKeysEl) return;
-  pianoKeysEl.innerHTML = '';
-  const allowed = new Set(scales[scale] || scales.chromatic);
-  notesLayout.forEach((note, idx) => {
-    const el = document.createElement('div');
-    el.className = 'piano-key' + (note.black ? ' black' : '');
-    el.dataset.row = String(note.row || 1);
-    el.dataset.key = note.key || '';
-    const semitone = noteIndexFromName(note.name) % 12;
-    el.dataset.note = note.name;
-    el.dataset.pad = String(idx % 16);
-    if (allowed.has(semitone)) {
-      el.addEventListener('click', async () => {
-        const padIndex = idx % 16;
-        const padConfig = pads.get(padIndex) ?? ensurePadExists(padIndex);
-        selectPadButton(padIndex);
-        showPadDetails(padIndex);
-        el.classList.add('active');
-        setTimeout(() => el.classList.remove('active'), 150);
-        try { await playPad(padIndex, padConfig); } catch (err) { meta.textContent = `ERROR: ${err?.message ?? String(err)}`; }
-      });
-    } else {
-      el.classList.add('disabled');
-    }
-    const label = document.createElement('div');
-    label.className = 'note-label';
-    label.textContent = note.name;
-    el.appendChild(label);
-    pianoKeysEl.appendChild(el);
-  });
+  // rebuild after overlay is visible to get correct dimensions
+  requestAnimationFrame(() => ensureQwerty(scale, true));
+}
+
+function initMidi() {
+  if (midiOut) return midiOut;
+  if (!window.JZZ) return null;
+  try {
+    // prefer OSC if available, fallback to Tiny
+  if (currentOutType === 'osc' && window.JZZ.synth && window.JZZ.synth.OSC) {
+    midiOut = window.JZZ.synth.OSC();
+  } else if (window.JZZ.synth && window.JZZ.synth.Tiny) {
+    midiOut = window.JZZ.synth.Tiny();
+  } else {
+    midiOut = window.JZZ().openMidiOut();
+  }
+  } catch (err) {
+    console.error('MIDI init failed', err);
+    midiOut = null;
+  }
+  return midiOut;
+}
+
+function sendProgramChange(program = 0, msb = 0, lsb = 0) {
+  const out = initMidi();
+  if (!out) return;
+  try {
+    out.control(0, 0, msb);
+    out.control(0, 32, lsb);
+    out.program(0, program);
+    currentProgram = program;
+    meta.textContent = `Program ${program}`;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function noteOn(noteNum, velocity = 100) {
+  const out = initMidi();
+  if (!out) return;
+  try { out.noteOn(0, noteNum, velocity); } catch (err) { console.error(err); }
+}
+function noteOff(noteNum) {
+  const out = initMidi();
+  if (!out) return;
+  try { out.noteOff(0, noteNum); } catch (err) { console.error(err); }
+}
+
+function resetMidiOut() {
+  midiOut = null;
+  initMidi();
+  sendProgramChange(currentProgram, Number(bankMsbSel?.value || 0), Number(bankLsbSel?.value || 0));
+  ensureQwerty(scaleModeSelect?.value || 'chromatic');
 }
 
 async function playPad(padIndex, padConfig) {
@@ -343,6 +395,10 @@ const sampleListEl = document.getElementById('sampleList');
 let vuTimeout = null;
 let drawerTimer = null;
 let pianoTimer = null;
+let midiOut = null;
+let currentProgram = 0;
+let currentOutType = 'osc';
+let qwertyInput = null;
 
 function drawWaveform(buffer, canvas = waveformCanvas) {
   if (!buffer || !waveCtx || !canvas) return;
@@ -534,6 +590,86 @@ if (btnPianoMode) btnPianoMode.addEventListener('click', () => { setPianoOverlay
 if (btnClosePianoOverlay) btnClosePianoOverlay.addEventListener('click', () => setPianoOverlay(false));
 if (scaleModeSelect) scaleModeSelect.addEventListener('change', () => buildPiano(scaleModeSelect.value));
 
+const programOptions = [
+  { value: 0, label: '00 Acoustic Grand Piano' },
+  { value: 4, label: '04 Electric Piano 1' },
+  { value: 16, label: '16 Drawbar Organ' },
+  { value: 24, label: '24 Nylon Guitar' },
+  { value: 32, label: '32 Acoustic Bass' },
+  { value: 40, label: '40 Violin' },
+  { value: 48, label: '48 Strings' },
+  { value: 56, label: '56 Trumpet' },
+  { value: 64, label: '64 Soprano Sax' },
+  { value: 73, label: '73 Flute' },
+  { value: 80, label: '80 Square Lead' },
+  { value: 88, label: '88 New Age Pad' }
+];
+
+function hydrateProgramSelect() {
+  if (!programSelect) return;
+  programSelect.innerHTML = '';
+  programOptions.forEach(opt => {
+    const o = document.createElement('option');
+    o.value = String(opt.value);
+    o.textContent = opt.label;
+    programSelect.appendChild(o);
+  });
+  programSelect.value = String(currentProgram);
+}
+
+hydrateProgramSelect();
+if (programSelect) programSelect.addEventListener('change', () => {
+  const p = Number(programSelect.value || 0);
+  sendProgramChange(p, Number(bankMsb?.value || 0), Number(bankLsb?.value || 0));
+});
+
+if (midiOutSelect) midiOutSelect.addEventListener('change', () => { currentOutType = midiOutSelect.value; resetMidiOut(); });
+if (bankMsbSel) bankMsbSel.addEventListener('change', () => sendProgramChange(Number(programSelect?.value || 0), Number(bankMsbSel.value || 0), Number(bankLsbSel?.value || 0)));
+if (bankLsbSel) bankLsbSel.addEventListener('change', () => sendProgramChange(Number(programSelect?.value || 0), Number(bankMsbSel?.value || 0), Number(bankLsbSel.value || 0)));
+
+const knobCcMap = {
+  volume: 7,
+  pan: 10,
+  limiter: 91,
+  crunch: 12,
+  power: 13
+};
+
+function setKnobValue(el, value) {
+  const clamped = Math.max(0, Math.min(127, value));
+  const deg = -120 + (clamped / 127) * 240;
+  el.style.setProperty('--knob-deg', `${deg}deg`);
+  el.dataset.val = clamped;
+  const param = el.dataset.param;
+  const cc = knobCcMap[param];
+  if (cc !== undefined) {
+    const out = initMidi();
+    try { out?.control(0, cc, clamped); } catch {}
+  }
+}
+
+knobFaces.forEach(el => {
+  let dragging = false;
+  let startY = 0;
+  let startVal = Number(el.dataset.val || 64);
+  setKnobValue(el, startVal);
+  const onMove = (e) => {
+    if (!dragging) return;
+    const dy = startY - (e.touches ? e.touches[0].clientY : e.clientY);
+    const next = startVal + dy;
+    setKnobValue(el, next);
+  };
+  const onUp = () => { dragging = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('touchmove', onMove); };
+  el.addEventListener('mousedown', (e) => {
+    dragging = true; startY = e.clientY; startVal = Number(el.dataset.val || 64);
+    window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp, { once: true });
+  });
+  el.addEventListener('touchstart', (e) => {
+    dragging = true; startY = e.touches[0].clientY; startVal = Number(el.dataset.val || 64);
+    window.addEventListener('touchmove', onMove); window.addEventListener('touchend', onUp, { once: true });
+  });
+});
+
 // Keyboard map
 const keyMap = new Map([
   ['1',0],['2',1],['3',2],['4',3],
@@ -543,21 +679,9 @@ const keyMap = new Map([
 ]);
 
 window.addEventListener('keydown', async (e) => {
-  if (pianoOverlay && pianoOverlay.classList.contains('open')) {
-    const k = (e.key || '').toLowerCase();
-    if (pianoKeyMap.has(k)) {
-      e.preventDefault();
-      const idx = pianoKeyMap.get(k);
-      const keyEl = pianoKeysEl?.children?.[idx];
-      const padIndex = idx % 16;
-      const padConfig = pads.get(padIndex) ?? ensurePadExists(padIndex);
-      selectPadButton(padIndex);
-      showPadDetails(padIndex);
-      keyEl?.classList.add('active');
-      setTimeout(() => keyEl?.classList.remove('active'), 150);
-      try { await playPad(padIndex, padConfig); } catch (err) { meta.textContent = `ERROR: ${err?.message ?? String(err)}`; }
-      return;
-    }
+  if (pianoOverlay && pianoOverlay.classList.contains('open') && qwertyInput) {
+    // Let JZZ.input.Qwerty handle keystrokes
+    return;
   }
   if (e.repeat) return;
   if (e.code === 'Space') { e.preventDefault(); stopAll(); return; }

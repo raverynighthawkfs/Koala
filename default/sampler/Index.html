@@ -11,6 +11,11 @@
     href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
     rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/jzz@1.8.9"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jzz@1.8.9/dist/JZZ.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jzz-synth-osc@1.3.6/dist/JZZ.synth.OSC.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jzz-synth-tiny@1.2.2/dist/JZZ.synth.Tiny.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jzz@1.8.9/javascript/JZZ.input.Knobs.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jzz@1.8.9/javascript/JZZ.input.Qwerty.js"></script>
 
   <!-- Local CSS (same folder as this file) -->
   <link rel="stylesheet" href="./sampler.css" />
@@ -147,28 +152,90 @@
     </div>
 
     <div id="pianoOverlay" class="piano-overlay" aria-hidden="true">
-      <div class="piano-header">
-        <div class="piano-title">
-          <span class="material-symbols-outlined">piano</span>
-          Keyboard
+      <div class="piano-shell">
+        <div class="piano-header">
+          <div class="piano-title">
+            <span class="material-symbols-outlined">piano</span>
+            Keyboard
+          </div>
+          <div class="piano-controls">
+            <label for="scaleMode">Scale</label>
+            <select id="scaleMode">
+              <option value="chromatic">Chromatic</option>
+              <option value="major">Major</option>
+              <option value="minor">Minor</option>
+              <option value="harmonic-minor">Harmonic Minor</option>
+              <option value="pentatonic">Pentatonic</option>
+              <option value="whole-tone">Whole Tone</option>
+            </select>
+            <button id="closePianoOverlay" class="drawer-icon" aria-label="Close keyboard">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
         </div>
-        <div class="piano-controls">
-          <label for="scaleMode">Scale</label>
-          <select id="scaleMode">
-            <option value="chromatic">Chromatic</option>
-            <option value="major">Major</option>
-            <option value="minor">Minor</option>
-            <option value="harmonic-minor">Harmonic Minor</option>
-            <option value="pentatonic">Pentatonic</option>
-            <option value="whole-tone">Whole Tone</option>
-          </select>
-          <button id="closePianoOverlay" class="drawer-icon" aria-label="Close keyboard">
-            <span class="material-symbols-outlined">close</span>
-          </button>
+
+        <div class="piano-row controls-row">
+          <div class="piano-drops">
+            <label>System</label>
+            <select id="midiSystem">
+              <option value="GM">GM</option>
+              <option value="GM2">GM2</option>
+              <option value="GS">GS</option>
+              <option value="XG">XG</option>
+            </select>
+          </div>
+          <div class="piano-drops">
+            <label>Bank MSB</label>
+            <select id="bankMsb">
+              <option value="0">0</option>
+            </select>
+          </div>
+          <div class="piano-drops">
+            <label>Bank LSB</label>
+            <select id="bankLsb">
+              <option value="0">0</option>
+            </select>
+          </div>
+          <div class="piano-drops wide">
+            <label>Program</label>
+            <select id="programSelect"></select>
+          </div>
+          <div class="piano-drops">
+            <label>MIDI Out</label>
+            <select id="midiOutSelect">
+              <option value="tiny">Tiny</option>
+              <option value="osc">OSC</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="piano-body">
-        <div id="pianoKeys" class="piano-keys"></div>
+
+        <div class="piano-row knob-row">
+          <div class="knob">
+            <div class="knob-face" data-param="volume"></div>
+            <div class="knob-label">Volume</div>
+          </div>
+          <div class="knob">
+            <div class="knob-face" data-param="limiter"></div>
+            <div class="knob-label">Limiter</div>
+          </div>
+          <div class="knob">
+            <div class="knob-face" data-param="crunch"></div>
+            <div class="knob-label">Crunch</div>
+          </div>
+          <div class="knob-spacer"></div>
+          <div class="knob">
+            <div class="knob-face" data-param="power"></div>
+            <div class="knob-label">Power</div>
+          </div>
+          <div class="knob">
+            <div class="knob-face" data-param="pan"></div>
+            <div class="knob-label">Pan</div>
+          </div>
+        </div>
+
+        <div class="piano-body">
+          <div id="pianoKeys" class="piano-keys"></div>
+        </div>
       </div>
     </div>
   </div>
