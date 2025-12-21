@@ -233,6 +233,7 @@ function buildPiano(scale = 'chromatic') {
   requestAnimationFrame(() => ensureQwerty(scale, true));
   // double-tap after paint in case dimensions were 0 on first pass
   setTimeout(() => ensureQwerty(scale, true), 120);
+  setTimeout(() => ensureQwerty(scale, true), 260);
 }
 
 function initMidi() {
