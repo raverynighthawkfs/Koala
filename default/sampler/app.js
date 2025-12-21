@@ -188,7 +188,10 @@ function noteIndexFromName(name) {
 }
 
 function ensureQwerty(scale = 'chromatic', force = false) {
-  if (!pianoKeysEl || !window.JZZ || !JZZ.input || !JZZ.input.Qwerty) return;
+  if (!pianoKeysEl || !window.JZZ || !JZZ.input || !JZZ.input.Qwerty) {
+    console.warn('Qwerty keyboard unavailable (JZZ.input.Qwerty missing).');
+    return;
+  }
   if (force && qwertyInput) {
     try { qwertyInput.disconnect(); } catch {}
     qwertyInput = null;
@@ -223,6 +226,8 @@ function ensureQwerty(scale = 'chromatic', force = false) {
 function buildPiano(scale = 'chromatic') {
   // rebuild after overlay is visible to get correct dimensions
   requestAnimationFrame(() => ensureQwerty(scale, true));
+  // double-tap after paint in case dimensions were 0 on first pass
+  setTimeout(() => ensureQwerty(scale, true), 80);
 }
 
 function initMidi() {

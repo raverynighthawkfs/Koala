@@ -380,6 +380,7 @@ body{
   gap: 0px;
   position: relative;
   height: 45vh;
+  min-height: 320px;
 }
 .piano-key{
   height: 40vh;
