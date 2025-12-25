@@ -1,7 +1,7 @@
 {
   "name": "koala-electron",
   "version": "0.1.0",
-  "description": "Minimal Electron wrapper to run the Koala sampler UI",
+  "description": "Minimal Electron wrapper to run the Ohtani Sampler UI",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

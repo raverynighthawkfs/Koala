@@ -55,6 +55,9 @@ let seqIsPlaying = false;
 let seqMetronomeOn = false;
 let seqBars = 1;
 let pianoSampleId = null;
+let pianoOctave = 4;
+let seqTimer = null;
+let seqStep = 0;
 
 // WebAudio
 const audio = new (window.AudioContext || window.webkitAudioContext)();
@@ -230,6 +233,36 @@ function animatePianoWave(midiNote) {
   draw();
 }
 
+async function playSampleAsNote(sampleId, semitoneOffset = 0) {
+  if (sampleId == null) { meta.textContent = 'No sample loaded into Keys.'; return; }
+  await ensureAudioRunning();
+  const buf = await getPlayableBuffer(sampleId, false);
+  const src = audio.createBufferSource();
+  src.buffer = buf;
+  src.playbackRate.value = Math.pow(2, semitoneOffset / 12);
+  const gain = audio.createGain();
+  gain.gain.value = 0.9;
+  src.connect(gain).connect(audio.destination);
+  src.start();
+  setTimeout(() => { try { src.stop(); } catch {} }, 5000);
+}
+
+function flashCssKey(idx) {
+  const keyEl = cssKeys[idx];
+  if (!keyEl) return;
+  keyEl.classList.add('active');
+  setTimeout(() => keyEl.classList.remove('active'), 180);
+}
+
+function playPianoKeyByIndex(idx) {
+  if (pianoSampleId == null) { meta.textContent = 'Load a pad into Keys first (click PIANO badge).'; return; }
+  const semitone = (pianoOctave * 12 + idx) - 48; // center around C4
+  playSampleAsNote(pianoSampleId, semitone);
+  flashCssKey(idx);
+  pingPianoVu();
+  animatePianoWave(60 + semitone);
+}
+
 function renderSeqSlots(seqs = []) {
   if (!seqSlots.length) return;
   seqSlots.forEach((btn, idx) => {
@@ -280,6 +313,31 @@ function toggleMetronome() {
   if (seqMetroBtn) seqMetroBtn.classList.toggle('active', seqMetronomeOn);
 }
 
+function stopSeqLoop() {
+  if (seqTimer) { clearInterval(seqTimer); seqTimer = null; }
+  const cells = seqGrid ? seqGrid.querySelectorAll('.seq-cell.playing-col') : [];
+  cells.forEach(c => c.classList.remove('playing-col'));
+}
+
+function startSeqLoop() {
+  stopSeqLoop();
+  if (!seqGrid) return;
+  const cols = 8;
+  seqStep = 0;
+  const highlight = () => {
+    const cells = seqGrid.querySelectorAll('.seq-cell');
+    cells.forEach(c => c.classList.remove('playing-col'));
+    cells.forEach(c => {
+      const col = Number(c.dataset.col);
+      if (col === seqStep) c.classList.add('playing-col');
+    });
+    seqStep = (seqStep + 1) % cols;
+  };
+  highlight();
+  const intervalMs = (60 / (sequenceState?.bpm || 120)) * 1000 * (4/seqBars);
+  seqTimer = setInterval(highlight, intervalMs);
+}
+
 function setSampleDrawer(open) {
   if (!sampleDrawer) return;
   sampleDrawer.classList.toggle('open', open);
@@ -308,6 +366,7 @@ function setSequencerOverlay(open) {
     currentInstrument = 'sampler';
     seqIsPlaying = false;
     updateSeqPlayUI();
+    stopSeqLoop();
   }
 }
 
@@ -868,8 +927,8 @@ if (btnSequenceMode) btnSequenceMode.addEventListener('click', () => { setInstru
 if (btnCloseSequencer) btnCloseSequencer.addEventListener('click', () => setSequencerOverlay(false));
 if (seqSlots.length) seqSlots.forEach((btn, idx) => btn.addEventListener('click', () => { currentSeqId = idx; renderSeqSlots(sequenceState?.sequences || []); renderSeqGrid(sequenceState?.sequences?.[idx]); }));
 if (btnSeqToPiano) btnSeqToPiano.addEventListener('click', () => setInstrument('piano'));
-if (seqPlayBtn) seqPlayBtn.addEventListener('click', () => toggleSeqPlay(true));
-if (seqStopBtn) seqStopBtn.addEventListener('click', () => toggleSeqPlay(false));
+if (seqPlayBtn) seqPlayBtn.addEventListener('click', () => { toggleSeqPlay(true); startSeqLoop(); });
+if (seqStopBtn) seqStopBtn.addEventListener('click', () => { toggleSeqPlay(false); stopSeqLoop(); });
 if (seqMetroBtn) seqMetroBtn.addEventListener('click', () => toggleMetronome());
 if (seqBarsSel) seqBarsSel.addEventListener('change', () => { seqBars = Number(seqBarsSel.value || 1); meta.textContent = `Sequencer bars: ${seqBars}`; });
 if (btnMixerTab) btnMixerTab.addEventListener('click', () => { meta.textContent = 'Mixer tab (stub)'; });
@@ -921,12 +980,12 @@ window.addEventListener('keydown', async (e) => {
   const t = e.target;
   if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
   const k = (e.key || '').toLowerCase();
-  if (!keyMap.has(k)) return;
+  if (!keyMap.has(k) && k !== 'z' && k !== 'x') return;
   e.preventDefault();
   if (currentInstrument === 'piano') {
-    const idx = keyMap.get(k) % cssKeys.length;
-    const keyEl = cssKeys[idx];
-    if (keyEl) playCssNote(keyEl);
+    if (k === 'z') { pianoOctave = Math.max(1, pianoOctave - 1); meta.textContent = `Keys octave ${pianoOctave}`; return; }
+    if (k === 'x') { pianoOctave = Math.min(7, pianoOctave + 1); meta.textContent = `Keys octave ${pianoOctave}`; return; }
+    if (keyMap.has(k)) playPianoKeyByIndex(keyMap.get(k));
     return;
   }
   const padIndex = keyMap.get(k);

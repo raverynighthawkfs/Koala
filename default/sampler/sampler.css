@@ -377,6 +377,10 @@ body{
   background: linear-gradient(180deg, rgba(109,216,255,0.75), rgba(8,16,22,0.9));
   box-shadow: 0 0 12px rgba(109,216,255,0.45);
 }
+.seq-cell.playing-col{
+  outline: 2px solid rgba(109,216,255,0.9);
+  box-shadow: 0 0 12px rgba(109,216,255,0.6);
+}
 .piano-overlay.open{
   transform: translateY(0);
   opacity: 1;

@@ -1,6 +1,6 @@
-# Koala Electron Wrapper
+# Ohtani Sampler Electron Wrapper
 
-This folder contains a minimal Electron scaffold that loads the existing sampler UI found at `default/sampler/Index.html`.
+This folder contains a minimal Electron scaffold that loads the Ohtani Sampler UI found at `default/sampler/Index.html`.
 
 Quick start
 
