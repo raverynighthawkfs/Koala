@@ -30,6 +30,11 @@ const btnSeqToPiano = document.getElementById('seqToPiano');
 const btnSeqUndo = document.getElementById('seqUndo');
 const btnSeqClear = document.getElementById('seqClear');
 const btnCloseSequencer = document.getElementById('closeSequencer');
+const btnMixerTab = document.getElementById('mixerTab');
+const fxOverlay = document.getElementById('fxOverlay');
+const btnFxMode = document.getElementById('fxMode');
+const btnCloseFx = document.getElementById('closeFx');
+const pianoSampleLabel = document.getElementById('pianoSampleLabel');
 const cssPiano = document.getElementById('cssPiano');
 const cssPianoStatus = document.getElementById('cssPianoStatus');
 const cssKeys = Array.from(document.querySelectorAll('.css-key'));
@@ -46,6 +51,10 @@ let pianoWaveStop = 0;
 const pianoWaveCtx = pianoWaveformCanvas && pianoWaveformCanvas.getContext ? pianoWaveformCanvas.getContext('2d') : null;
 let sequenceState = null;
 let currentSeqId = 0;
+let seqIsPlaying = false;
+let seqMetronomeOn = false;
+let seqBars = 1;
+let pianoSampleId = null;
 
 // WebAudio
 const audio = new (window.AudioContext || window.webkitAudioContext)();
@@ -255,6 +264,22 @@ function renderSeqGrid(seq) {
   });
 }
 
+function updateSeqPlayUI() {
+  if (seqPlayBtn) seqPlayBtn.classList.toggle('active', seqIsPlaying);
+  if (seqStopBtn) seqStopBtn.classList.toggle('active', !seqIsPlaying);
+}
+
+function toggleSeqPlay(play) {
+  seqIsPlaying = play;
+  updateSeqPlayUI();
+  meta.textContent = seqIsPlaying ? 'Sequencer: Playing (stub)' : 'Sequencer: Stopped';
+}
+
+function toggleMetronome() {
+  seqMetronomeOn = !seqMetronomeOn;
+  if (seqMetroBtn) seqMetroBtn.classList.toggle('active', seqMetronomeOn);
+}
+
 function setSampleDrawer(open) {
   if (!sampleDrawer) return;
   sampleDrawer.classList.toggle('open', open);
@@ -281,7 +306,15 @@ function setSequencerOverlay(open) {
   sequencerOverlay.setAttribute('aria-hidden', open ? 'false' : 'true');
   if (!open) {
     currentInstrument = 'sampler';
+    seqIsPlaying = false;
+    updateSeqPlayUI();
   }
+}
+
+function setFxOverlay(open) {
+  if (!fxOverlay) return;
+  fxOverlay.classList.toggle('open', open);
+  fxOverlay.setAttribute('aria-hidden', open ? 'false' : 'true');
 }
 
 function setInstrument(mode = 'sampler') {
@@ -294,6 +327,12 @@ function setInstrument(mode = 'sampler') {
     toggleCssPiano(true, 'Piano active — keys mapped.');
     meta.textContent = 'Instrument: Piano (Sampler paused)';
     setSequencerOverlay(false);
+  } else if (mode === 'sequencer') {
+    stopAll();
+    currentInstrument = 'sequencer';
+    setPianoOverlay(false);
+    setSequencerOverlay(true);
+    meta.textContent = 'Instrument: Sequencer (Sampler paused)';
   } else {
     stopPianoAudio();
     currentInstrument = 'sampler';
@@ -533,12 +572,16 @@ function makePadButton(i, padConfig) {
   const sub = document.createElement('div');
   sub.className = 'padSub';
   sub.textContent = padConfig ? sampleLabel(padConfig.sampleId) : 'empty';
-   // placeholder block for pad name
+  // placeholder block for pad name
   const blocker = document.createElement('div');
   blocker.className = 'padNameBlock';
   blocker.textContent = sub.textContent;
+  const pianoBadge = document.createElement('div');
+  pianoBadge.className = 'piano-badge';
+  pianoBadge.textContent = 'PIANO';
+  pianoBadge.title = 'Send to piano';
 
-  b.append(top, sub, blocker);
+  b.append(top, sub, blocker, pianoBadge);
 
   b.addEventListener('click', async () => {
     try {
@@ -549,6 +592,14 @@ function makePadButton(i, padConfig) {
     } catch (err) {
       meta.textContent = `ERROR: ${err?.message ?? String(err)}`;
       console.error(err);
+    }
+  });
+  pianoBadge.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (padConfig && padConfig.sampleId != null) {
+      pianoSampleId = padConfig.sampleId;
+      if (pianoSampleLabel) pianoSampleLabel.textContent = sampleLabel(pianoSampleId);
+      meta.textContent = `Loaded ${sampleLabel(pianoSampleId)} into Keys (Piano v2 stub).`;
     }
   });
 
@@ -804,6 +855,7 @@ window.addEventListener('keyup', (e) => {
     setSampleDrawer(false);
     setPianoOverlay(false);
     setSequencerOverlay(false);
+    setFxOverlay(false);
   }
 });
 if (btnPianoMode) btnPianoMode.addEventListener('click', () => { setInstrument('piano'); });
@@ -812,10 +864,17 @@ if (scaleModeSelect) scaleModeSelect.addEventListener('change', () => flashCssSt
 if (octaveSelect) octaveSelect.addEventListener('change', () => { assignCssPianoNotes(); flashCssStatus(`Octave ${octaveSelect.value}`); });
 if (waveSelect) waveSelect.addEventListener('change', () => { flashCssStatus(`Wave ${waveSelect.value}`); });
 if (btnBackToSampler) btnBackToSampler.addEventListener('click', () => { setInstrument('sampler'); });
-if (btnSequenceMode) btnSequenceMode.addEventListener('click', () => { stopAll(); setSequencerOverlay(true); currentInstrument = 'sequencer'; });
+if (btnSequenceMode) btnSequenceMode.addEventListener('click', () => { setInstrument('sequencer'); });
 if (btnCloseSequencer) btnCloseSequencer.addEventListener('click', () => setSequencerOverlay(false));
 if (seqSlots.length) seqSlots.forEach((btn, idx) => btn.addEventListener('click', () => { currentSeqId = idx; renderSeqSlots(sequenceState?.sequences || []); renderSeqGrid(sequenceState?.sequences?.[idx]); }));
 if (btnSeqToPiano) btnSeqToPiano.addEventListener('click', () => setInstrument('piano'));
+if (seqPlayBtn) seqPlayBtn.addEventListener('click', () => toggleSeqPlay(true));
+if (seqStopBtn) seqStopBtn.addEventListener('click', () => toggleSeqPlay(false));
+if (seqMetroBtn) seqMetroBtn.addEventListener('click', () => toggleMetronome());
+if (seqBarsSel) seqBarsSel.addEventListener('change', () => { seqBars = Number(seqBarsSel.value || 1); meta.textContent = `Sequencer bars: ${seqBars}`; });
+if (btnMixerTab) btnMixerTab.addEventListener('click', () => { meta.textContent = 'Mixer tab (stub)'; });
+if (btnFxMode) btnFxMode.addEventListener('click', () => setFxOverlay(true));
+if (btnCloseFx) btnCloseFx.addEventListener('click', () => setFxOverlay(false));
 
 function setKnobValue(el, value) {
   const clamped = Math.max(0, Math.min(127, value));

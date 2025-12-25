@@ -55,6 +55,10 @@
           <span class="material-symbols-outlined" slot="icon">list</span>
           Sequencer
         </mdui-button>
+        <mdui-button id="fxMode" variant="tonal">
+          <span class="material-symbols-outlined" slot="icon">graphic_eq</span>
+          FX
+        </mdui-button>
         <mdui-button id="resumeAudio" variant="tonal">
           <span class="material-symbols-outlined" slot="icon">play_arrow</span>
           Resume Jam
@@ -75,6 +79,7 @@
         </div>
 
         <div id="grid" class="grid" aria-label="Pad grid"></div>
+        <button id="mixerTab" class="mixer-tab" type="button" aria-label="Open mixer">Mixer</button>
       </section>
 
       <section class="card panel">
@@ -230,6 +235,10 @@
             <div class="knob-label">Pan</div>
           </div>
         </div>
+        <div class="piano-load">
+          <div class="piano-load-label">Loaded Sample for Keys:</div>
+          <div id="pianoSampleLabel" class="piano-load-name">None (click a pad piano badge)</div>
+        </div>
 
         <div class="audio-window piano-audio-window">
           <div class="audio-window-title">Piano Audio Window</div>
@@ -332,6 +341,36 @@
         </div>
 
         <div class="seq-grid" id="seqGrid" aria-label="Sequencer grid"></div>
+      </div>
+    </div>
+
+    <div id="fxOverlay" class="fx-overlay" aria-hidden="true">
+      <div class="fx-shell">
+        <header class="fx-head">
+          <div class="fx-title">
+            <span class="material-symbols-outlined">bolt</span>
+            Sound FX
+          </div>
+          <button id="closeFx" class="drawer-icon" aria-label="Close FX">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </header>
+
+        <div class="fx-io">
+          <button class="fx-toggle"><span class="material-symbols-outlined">mic</span> Mic</button>
+          <button class="fx-toggle"><span class="material-symbols-outlined">headphones</span> Phones</button>
+        </div>
+
+        <div class="fx-grid">
+          <button class="fx-btn">More Bass</button>
+          <button class="fx-btn">More Treble</button>
+          <button class="fx-btn">Fuzz</button>
+          <button class="fx-btn">Robot</button>
+          <button class="fx-btn">Reverb</button>
+          <button class="fx-btn">8ve Up</button>
+          <button class="fx-btn">8ve Down</button>
+          <button class="fx-btn">Bass Synth</button>
+        </div>
       </div>
     </div>
   </div>
