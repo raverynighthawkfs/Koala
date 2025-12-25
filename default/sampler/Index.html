@@ -10,12 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
     rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/jzz@1.8.9"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jzz@1.8.9/dist/JZZ.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jzz-synth-osc@1.3.6/dist/JZZ.synth.OSC.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jzz-synth-tiny@1.2.2/dist/JZZ.synth.Tiny.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jzz@1.8.9/dist/JZZ.input.Knobs.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jzz@1.8.9/dist/JZZ.input.Qwerty.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.js"></script>
 
   <!-- Local CSS (same folder as this file) -->
   <link rel="stylesheet" href="./sampler.css" />
@@ -37,14 +32,14 @@
         <div class="brand-title">
           <span class="logo">
             <span class="material-symbols-outlined logo-icon">dark_mode</span>
-            <span class="logo-text logo-A">A</span>
-            <span class="logo-text logo-accent">I</span>
+            <span class="logo-text logo-A">O</span>
+            <span class="logo-text logo-accent">T</span>
             <span class="logo-stack">
-              <span class="logo-text z-behind">Z</span>
+              <span class="logo-text z-behind">A</span>
               <span class="material-symbols-outlined logo-icon bolt">bolt</span>
             </span>
-            <span class="logo-text logo-accent">E</span>
-            <span class="logo-text logo-N">N</span>
+            <span class="logo-text logo-accent">N</span>
+            <span class="logo-text logo-N">I</span>
             <span class="material-symbols-outlined logo-icon">sword_rose</span>
           </span>
         </div>
@@ -52,13 +47,17 @@
       </div>
 
       <div class="actions">
-        <mdui-button id="resumeAudio" variant="tonal">
-          <span class="material-symbols-outlined" slot="icon">play_arrow</span>
-          Resume Jam
-        </mdui-button>
         <mdui-button id="pianoMode" variant="tonal">
           <span class="material-symbols-outlined" slot="icon">piano</span>
           Keys
+        </mdui-button>
+        <mdui-button id="sequenceMode" variant="tonal">
+          <span class="material-symbols-outlined" slot="icon">list</span>
+          Sequencer
+        </mdui-button>
+        <mdui-button id="resumeAudio" variant="tonal">
+          <span class="material-symbols-outlined" slot="icon">play_arrow</span>
+          Resume Jam
         </mdui-button>
 
         <mdui-button id="stopAll" variant="filled">
@@ -158,56 +157,51 @@
             <span class="material-symbols-outlined">piano</span>
             Keyboard
           </div>
-          <div class="piano-controls">
-            <label for="scaleMode">Scale</label>
-            <select id="scaleMode">
-              <option value="chromatic">Chromatic</option>
-              <option value="major">Major</option>
-              <option value="minor">Minor</option>
-              <option value="harmonic-minor">Harmonic Minor</option>
-              <option value="pentatonic">Pentatonic</option>
-              <option value="whole-tone">Whole Tone</option>
-            </select>
+        
             <button id="closePianoOverlay" class="drawer-icon" aria-label="Close keyboard">
               <span class="material-symbols-outlined">close</span>
             </button>
           </div>
         </div>
 
-        <div class="piano-row controls-row">
+        <div class="piano-row controls-row piano-controls-row">
           <div class="piano-drops">
-            <label>System</label>
-            <select id="midiSystem">
-              <option value="GM">GM</option>
-              <option value="GM2">GM2</option>
-              <option value="GS">GS</option>
-              <option value="XG">XG</option>
+            <label>Scale</label>
+            <select id="scaleMode">
+              <option value="chromatic">Chrome-Addict</option>
+              <option value="major">Major Fahkin Dilemma</option>
+              <option value="minor">Minor Fahkin Threat</option>
+              <option value="harmonic-minor">Harmonic A Minorrrr</option>
+              <option value="pentatonic">Pent-House-A-Tonic</option>
+              <option value="whole-tone">Butt Hole I-O Tone Y-O</option>
             </select>
           </div>
           <div class="piano-drops">
-            <label>Bank MSB</label>
-            <select id="bankMsb">
-              <option value="0">0</option>
+            <label>Octave</label>
+            <select id="octaveSelect">
+              <option value="3">LOWZ</option>
+              <option value="4" selected>MEDZ</option>
+              <option value="5">HIGH</option>
             </select>
           </div>
           <div class="piano-drops">
-            <label>Bank LSB</label>
-            <select id="bankLsb">
-              <option value="0">0</option>
+            <label>Wave</label>
+            <select id="waveSelect">
+              <option value="triangle">Triangle</option>
+              <option value="sine">Sine</option>
+              <option value="square">Square</option>
+              <option value="sawtooth">Saw</option>
             </select>
           </div>
-          <div class="piano-drops wide">
-            <label>Program</label>
-            <select id="programSelect"></select>
-          </div>
-          <div class="piano-drops">
-            <label>MIDI Out</label>
-            <select id="midiOutSelect">
-              <option value="tiny">Tiny</option>
-              <option value="osc">OSC</option>
-            </select>
+          <div class="piano-drops sampler-drops">
+            <label>Sampler</label>
+            <button id="backToSampler" class="sampler-btn" type="button">
+              <span class="material-symbols-outlined">blur_on</span>
+              SAMPLER
+            </button>
           </div>
         </div>
+
 
         <div class="piano-row knob-row">
           <div class="knob">
@@ -222,6 +216,10 @@
             <div class="knob-face" data-param="crunch"></div>
             <div class="knob-label">Crunch</div>
           </div>
+          <div class="knob">
+            <div class="knob-face" data-param="distortion"></div>
+            <div class="knob-label">Distortion</div>
+          </div>
           <div class="knob-spacer"></div>
           <div class="knob">
             <div class="knob-face" data-param="power"></div>
@@ -233,14 +231,30 @@
           </div>
         </div>
 
+        <div class="audio-window piano-audio-window">
+          <div class="audio-window-title">Piano Audio Window</div>
+          <div id="pianoVuWindow" class="vu-window" aria-label="Piano visual volume display">
+            <div class="bars">
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+          </div>
+          <canvas id="pianoWaveform" width="720" height="120"></canvas>
+        </div>
+
         <div class="piano-body">
           <div id="pianoKeys" class="piano-keys">
             <div id="cssPiano" class="css-piano" aria-hidden="true">
               <div class="css-piano__deck">
                 <div class="css-piano__glow"></div>
-                <div class="css-piano__brand">Aizen Keys</div>
+                <div class="css-piano__brand">Made by Aizen</div>
                 <div class="css-piano__keys">
                   <div class="css-piano__whites">
+                    <span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span>
                     <span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span>
                     <span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span>
                   </div>
@@ -255,6 +269,11 @@
                     <span class="css-key black" style="--i:10"></span>
                     <span class="css-key black" style="--i:11"></span>
                     <span class="css-key black" style="--i:12"></span>
+                    <span class="css-key black" style="--i:14"></span>
+                    <span class="css-key black" style="--i:15"></span>
+                    <span class="css-key black" style="--i:17"></span>
+                    <span class="css-key black" style="--i:18"></span>
+                    <span class="css-key black" style="--i:19"></span>
                   </div>
                 </div>
               </div>
@@ -262,6 +281,57 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div id="sequencerOverlay" class="sequencer-overlay" aria-hidden="true">
+      <div class="seq-shell">
+        <header class="seq-head">
+          <div class="seq-head-left">
+            <button id="seqPlay" class="seq-btn" aria-label="Play sequence">
+              <span class="material-symbols-outlined">play_arrow</span>
+            </button>
+            <button id="seqStop" class="seq-btn" aria-label="Stop sequence">
+              <span class="material-symbols-outlined">stop</span>
+            </button>
+            <div class="seq-bpm">
+              <span id="seqBpmDisplay">120</span> BPM
+              <button id="seqMetro" class="seq-btn ghost" aria-label="Toggle metronome">
+                <span class="material-symbols-outlined">metronome</span>
+              </button>
+            </div>
+          </div>
+          <button id="closeSequencer" class="drawer-icon" aria-label="Close sequencer">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </header>
+
+        <div class="seq-slots">
+          <button class="seq-slot" data-slot="0"></button>
+          <button class="seq-slot" data-slot="1"></button>
+          <button class="seq-slot" data-slot="2"></button>
+          <button class="seq-slot" data-slot="3"></button>
+          <button class="seq-slot" data-slot="4"></button>
+          <button class="seq-slot" data-slot="5"></button>
+          <button class="seq-slot" data-slot="6"></button>
+          <button class="seq-slot" data-slot="7"></button>
+        </div>
+
+        <div class="seq-toolbar">
+          <button id="seqToPiano" class="seq-tab">
+            <span class="material-symbols-outlined">piano</span>
+          </button>
+          <button id="seqUndo" class="seq-tab">UNDO</button>
+          <button id="seqClear" class="seq-tab">CLEAR</button>
+          <select id="seqBars" class="seq-select">
+            <option value="1">1 BAR</option>
+            <option value="2">2 BAR</option>
+            <option value="4">4 BAR</option>
+            <option value="8">8 BAR</option>
+          </select>
+        </div>
+
+        <div class="seq-grid" id="seqGrid" aria-label="Sequencer grid"></div>
       </div>
     </div>
   </div>

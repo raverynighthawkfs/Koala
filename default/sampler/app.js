@@ -2,6 +2,7 @@ const grid = document.getElementById('grid');
 const meta = document.getElementById('meta');
 const btnStopAll = document.getElementById('stopAll');
 const btnResume = document.getElementById('resumeAudio');
+const btnSequenceMode = document.getElementById('sequenceMode');
 const sampleDrawer = document.getElementById('sampleDrawer');
 const btnOpenSampleDrawer = document.getElementById('openSampleDrawer');
 const btnCloseSampleDrawer = document.getElementById('closeSampleDrawer');
@@ -9,16 +10,42 @@ const drawerHandle = document.getElementById('drawerHandle');
 const pianoOverlay = document.getElementById('pianoOverlay');
 const btnPianoMode = document.getElementById('pianoMode');
 const btnClosePianoOverlay = document.getElementById('closePianoOverlay');
+const btnBackToSampler = document.getElementById('backToSampler');
 const pianoKeysEl = document.getElementById('pianoKeys');
 const scaleModeSelect = document.getElementById('scaleMode');
-const midiSystemSel = document.getElementById('midiSystem');
-const bankMsbSel = document.getElementById('bankMsb');
-const bankLsbSel = document.getElementById('bankLsb');
-const programSelect = document.getElementById('programSelect');
-const midiOutSelect = document.getElementById('midiOutSelect');
+const octaveSelect = document.getElementById('octaveSelect');
+const waveSelect = document.getElementById('waveSelect');
 const vuWindow = document.getElementById('vuWindow');
+const pianoVuWindow = document.getElementById('pianoVuWindow');
+const pianoWaveformCanvas = document.getElementById('pianoWaveform');
+const sequencerOverlay = document.getElementById('sequencerOverlay');
+const seqPlayBtn = document.getElementById('seqPlay');
+const seqStopBtn = document.getElementById('seqStop');
+const seqMetroBtn = document.getElementById('seqMetro');
+const seqBpmDisplay = document.getElementById('seqBpmDisplay');
+const seqSlots = Array.from(document.querySelectorAll('.seq-slot'));
+const seqGrid = document.getElementById('seqGrid');
+const seqBarsSel = document.getElementById('seqBars');
+const btnSeqToPiano = document.getElementById('seqToPiano');
+const btnSeqUndo = document.getElementById('seqUndo');
+const btnSeqClear = document.getElementById('seqClear');
+const btnCloseSequencer = document.getElementById('closeSequencer');
 const cssPiano = document.getElementById('cssPiano');
 const cssPianoStatus = document.getElementById('cssPianoStatus');
+const cssKeys = Array.from(document.querySelectorAll('.css-key'));
+let cssPianoBound = false;
+let toneStarted = false;
+let toneSynth = null;
+let toneCrusher = null;
+let toneCompressor = null;
+let toneDistortion = null;
+let toneGain = null;
+let currentInstrument = 'sampler'; // 'sampler' or 'piano'
+let pianoWaveAnim = null;
+let pianoWaveStop = 0;
+const pianoWaveCtx = pianoWaveformCanvas && pianoWaveformCanvas.getContext ? pianoWaveformCanvas.getContext('2d') : null;
+let sequenceState = null;
+let currentSeqId = 0;
 
 // WebAudio
 const audio = new (window.AudioContext || window.webkitAudioContext)();
@@ -34,17 +61,7 @@ const activeByPad = new Map();
 
 let selectedPadIndex = null;
 const padKeyHints = ['1','2','3','4','Q','W','E','R','A','S','D','F','Z','X','C','V'];
-const notesLayout = [];
-const pianoKeyMap = new Map();
 const knobFaces = document.querySelectorAll('.knob-face');
-const scales = {
-  'chromatic':    [0,1,2,3,4,5,6,7,8,9,10,11],
-  'major':        [0,2,4,5,7,9,11],
-  'minor':        [0,2,3,5,7,8,10],
-  'harmonic-minor':[0,2,3,5,7,8,11],
-  'pentatonic':   [0,2,4,7,9],
-  'whole-tone':   [0,2,4,6,8,10]
-};
 
 function sampleUrl(sampleId) {
   return `./${sampleId}.wav`;
@@ -111,7 +128,7 @@ async function getPlayableBuffer(sampleId, reverse) {
 function stopPad(padIndex) {
   const nodes = activeByPad.get(padIndex);
   if (!nodes) return;
-  try { nodes.src.stop(); } catch {}
+  try { nodes.src?.stop(); } catch {}
   activeByPad.delete(padIndex);
 }
 
@@ -165,6 +182,79 @@ function pingVuActivity() {
   vuTimeout = setTimeout(() => vuWindow.classList.remove('active'), 5000);
 }
 
+function pingPianoVu() {
+  if (!pianoVuWindow) return;
+  pianoVuWindow.classList.add('active');
+  setTimeout(() => pianoVuWindow.classList.remove('active'), 5000);
+}
+
+function animatePianoWave(midiNote) {
+  if (!pianoWaveCtx || !pianoWaveformCanvas) return;
+  const ctx = pianoWaveCtx;
+  const w = pianoWaveformCanvas.width;
+  const h = pianoWaveformCanvas.height;
+  pianoWaveStop = performance.now() + 5000;
+  if (pianoWaveAnim) cancelAnimationFrame(pianoWaveAnim);
+
+  const hue = 180 + (midiNote % 40);
+  const draw = () => {
+    const now = performance.now();
+    if (now > pianoWaveStop) return;
+    ctx.clearRect(0,0,w,h);
+    const grad = ctx.createLinearGradient(0,0,w,h);
+    grad.addColorStop(0, `rgba(0, ${120 + (midiNote%80)}, 180, 0.25)`);
+    grad.addColorStop(1, 'rgba(0,0,0,0.7)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle = `hsl(${hue},90%,60%)`;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    const freq = 4 + (midiNote % 6);
+    for (let x = 0; x < w; x++) {
+      const norm = x / w;
+      const y = h/2 + Math.sin(norm * Math.PI * freq + now * 0.01) * h * 0.3 * Math.sin(now * 0.002);
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    pianoWaveAnim = requestAnimationFrame(draw);
+  };
+  draw();
+}
+
+function renderSeqSlots(seqs = []) {
+  if (!seqSlots.length) return;
+  seqSlots.forEach((btn, idx) => {
+    const s = seqs[idx];
+    btn.textContent = s ? `SEQ ${idx+1}` : '+';
+    btn.classList.toggle('active', idx === currentSeqId);
+  });
+}
+
+function renderSeqGrid(seq) {
+  if (!seqGrid) return;
+  seqGrid.innerHTML = '';
+  const cells = [];
+  for (let r=0;r<8;r++){
+    for (let c=0;c<8;c++){
+      const cell = document.createElement('div');
+      cell.className = 'seq-cell';
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+      cells.push(cell);
+      seqGrid.appendChild(cell);
+    }
+  }
+  if (!seq || !seq.noteSequence || !seq.noteSequence.pattern || !seq.noteSequence.pattern.notes) return;
+  const notes = seq.noteSequence.pattern.notes;
+  const total = Math.max(...notes.map(n => (n.timeOffset||0)+(n.length||0)), 1);
+  notes.forEach(n => {
+    const col = Math.min(7, Math.floor(((n.timeOffset||0)/total)*8));
+    const row = Math.min(7, Math.max(0, 7 - ((n.num||0)%8)));
+    const idx = row*8 + col;
+    if (cells[idx]) cells[idx].classList.add('active');
+  });
+}
+
 function setSampleDrawer(open) {
   if (!sampleDrawer) return;
   sampleDrawer.classList.toggle('open', open);
@@ -177,16 +267,40 @@ function setPianoOverlay(open) {
   pianoOverlay.classList.toggle('open', open);
   pianoOverlay.setAttribute('aria-hidden', open ? 'false' : 'true');
   if (open && pianoTimer) { clearTimeout(pianoTimer); pianoTimer = null; }
+  if (!open) {
+    Array.from(cssOscByKey.keys()).forEach(key => releaseCssNote(key));
+    currentInstrument = 'sampler';
+    stopPianoAudio();
+    meta.textContent = 'Instrument: Sampler';
+  }
 }
 
-function noteIndexFromName(name) {
-  const match = name.match(/^([A-G])(#?)(\d)$/);
-  if (!match) return 0;
-  const baseOrder = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-  const note = match[1] + (match[2] || '');
-  const octave = Number(match[3]);
-  const semitone = baseOrder.indexOf(note);
-  return octave * 12 + semitone;
+function setSequencerOverlay(open) {
+  if (!sequencerOverlay) return;
+  sequencerOverlay.classList.toggle('open', open);
+  sequencerOverlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+  if (!open) {
+    currentInstrument = 'sampler';
+  }
+}
+
+function setInstrument(mode = 'sampler') {
+  if (mode === currentInstrument) return;
+  if (mode === 'piano') {
+    stopAll();
+    currentInstrument = 'piano';
+    bindCssPiano();
+    setPianoOverlay(true);
+    toggleCssPiano(true, 'Piano active — keys mapped.');
+    meta.textContent = 'Instrument: Piano (Sampler paused)';
+    setSequencerOverlay(false);
+  } else {
+    stopPianoAudio();
+    currentInstrument = 'sampler';
+    setPianoOverlay(false);
+    setSequencerOverlay(false);
+    meta.textContent = 'Instrument: Sampler (Piano paused)';
+  }
 }
 
 function toggleCssPiano(show, message = '') {
@@ -197,108 +311,174 @@ function toggleCssPiano(show, message = '') {
   }
 }
 
-function ensureQwerty(scale = 'chromatic', force = false) {
-  if (!pianoKeysEl || !window.JZZ || !JZZ.input || !JZZ.input.Qwerty) {
-    console.warn('Qwerty keyboard unavailable (JZZ.input.Qwerty missing).');
-    toggleCssPiano(true, 'Keyboard unavailable — showing CSS piano only.');
-    return;
-  }
-  if (force && qwertyInput) {
-    try { qwertyInput.disconnect(); } catch {}
-    qwertyInput = null;
-  }
-  // force dimensions so the responsive keyboard renders
-  const w = Math.max(900, pianoKeysEl.clientWidth || Math.round(window.innerWidth * 0.9) || 900);
-  const h = Math.max(360, pianoKeysEl.clientHeight || Math.round(window.innerHeight * 0.5) || 360);
-  if (!qwertyInput) {
-    const fallback = cssPiano;
-    pianoKeysEl.innerHTML = '';
-    if (fallback) pianoKeysEl.appendChild(fallback);
-    qwertyInput = JZZ.input.Qwerty({
-      at: pianoKeysEl,
-      w,
-      h,
-      from: 'C3',
-      to: 'C5',
-      ww: 48, // white key width
-      wb: 32, // white key border radius
-      bw: 32, // black key width
-      bb: 24, // black key border radius
-      color: '#0b1016',
-      colorhi: '#0b1016',
-      colorlo: '#0b1016',
-      stroke: '#39ff14',
-      hl: '#7dff5d',
-      scale
+function flashCssStatus(message = '') {
+  if (!cssPianoStatus || !message) return;
+  cssPianoStatus.textContent = message;
+  cssPianoStatus.classList.add('show');
+  setTimeout(() => cssPianoStatus.classList.remove('show'), 2000);
+}
+
+function ensureCssPianoMounted() {
+  if (!pianoKeysEl || !cssPiano) return;
+  if (!pianoKeysEl.contains(cssPiano)) pianoKeysEl.appendChild(cssPiano);
+}
+
+function midiFromNoteName(note = 'C', octave = 4) {
+  const semis = { 'C':0,'C#':1,'D':2,'D#':3,'E':4,'F':5,'F#':6,'G':7,'G#':8,'A':9,'A#':10,'B':11 };
+  const semi = semis[note] ?? 0;
+  return (octave + 1) * 12 + semi;
+}
+
+function freqFromMidi(midiNote) {
+  return 440 * Math.pow(2, (midiNote - 69) / 12);
+}
+
+function assignCssPianoNotes() {
+  if (!cssKeys.length) return;
+  const baseOct = Number(octaveSelect?.value || 4);
+  const whiteKeys = cssKeys.filter(k => k.classList.contains('white'));
+  const blackKeys = cssKeys.filter(k => k.classList.contains('black'));
+  const whiteSeq = ['C','D','E','F','G','A','B'];
+  const blackSeq = ['C#','D#','F#','G#','A#'];
+  whiteKeys.forEach((key, idx) => {
+    const note = whiteSeq[idx % whiteSeq.length];
+    const octave = baseOct + Math.floor(idx / whiteSeq.length);
+    const midi = midiFromNoteName(note, octave);
+    key.dataset.midi = midi;
+    key.dataset.noteFull = `${note}${octave}`;
+  });
+  // build black notes list based on octave groups (5 blacks per octave)
+  const blackNotes = [];
+  for (let oct = 0; blackNotes.length < blackKeys.length; oct++) {
+    blackSeq.forEach(n => {
+      if (blackNotes.length < blackKeys.length) {
+        blackNotes.push({ note: n, octave: baseOct + oct });
+      }
     });
   }
-  toggleCssPiano(false);
+  blackKeys.forEach((key, idx) => {
+    const entry = blackNotes[idx] || { note: 'C#', octave: baseOct };
+    const midi = midiFromNoteName(entry.note, entry.octave);
+    key.dataset.midi = midi;
+    key.dataset.noteFull = `${entry.note}${entry.octave}`;
+  });
+}
+
+function releaseCssNote(keyEl) {
+  if (!keyEl) return;
+  keyEl.classList.remove('is-playing');
+  const osc = cssOscByKey.get(keyEl);
+  if (!osc) return;
   try {
-    qwertyInput.disconnect();
-    qwertyInput.connect(initMidi());
-  } catch (err) {
-    console.error(err);
+    osc.gain.gain.cancelScheduledValues(audio.currentTime);
+    osc.gain.gain.setTargetAtTime(0, audio.currentTime, 0.06);
+    osc.osc.stop(audio.currentTime + 0.12);
+  } catch {}
+  cssOscByKey.delete(keyEl);
+}
+
+function stopPianoAudio() {
+  Array.from(cssOscByKey.keys()).forEach(key => releaseCssNote(key));
+  try { toneSynth?.releaseAll?.(); } catch {}
+}
+
+async function ensureToneChain() {
+  if (!window.Tone) return null;
+  if (!toneStarted) {
+    try { await Tone.start(); toneStarted = true; } catch (err) { console.error(err); return null; }
+  }
+  if (!toneCrusher || !toneCompressor || !toneDistortion || !toneGain || !toneSynth) {
+    toneCrusher = new Tone.BitCrusher(4);
+    toneDistortion = new Tone.Distortion(0);
+    toneCompressor = new Tone.Compressor({ threshold: -24, ratio: 4, attack: 0.01, release: 0.25 });
+    toneGain = new Tone.Gain(0.8);
+    toneSynth = new Tone.PolySynth(Tone.Synth, { oscillator: { type: waveSelect?.value || 'triangle' } });
+    toneSynth.chain(toneCrusher, toneDistortion, toneCompressor, toneGain, Tone.Destination);
+  } else if (waveSelect) {
+    toneSynth.set({ oscillator: { type: waveSelect.value } });
+  }
+  return toneSynth;
+}
+
+function applyPianoControl(param, val) {
+  ensureToneChain();
+  const pct = val / 127;
+  switch(param) {
+    case 'volume':
+      if (toneGain) toneGain.gain.value = pct;
+      break;
+    case 'power':
+      if (toneGain) toneGain.gain.value = Math.max(0, pct * 1.1);
+      break;
+    case 'limiter':
+      if (toneCompressor) toneCompressor.threshold.value = -60 + pct * 40; // -60dB to -20dB
+      break;
+    case 'crunch':
+      if (toneCrusher) toneCrusher.bits = Math.max(1, Math.round(1 + pct * 7));
+      break;
+    case 'distortion':
+      if (toneDistortion) toneDistortion.distortion = Math.min(1, pct);
+      break;
+    default:
+      break;
   }
 }
 
-function buildPiano(scale = 'chromatic') {
-  // rebuild after overlay is visible to get correct dimensions
-  requestAnimationFrame(() => ensureQwerty(scale, true));
-  // double-tap after paint in case dimensions were 0 on first pass
-  setTimeout(() => ensureQwerty(scale, true), 120);
-  setTimeout(() => ensureQwerty(scale, true), 260);
-}
-
-function initMidi() {
-  if (midiOut) return midiOut;
-  if (!window.JZZ) return null;
-  try {
-    // prefer OSC if available, fallback to Tiny
-  if (currentOutType === 'osc' && window.JZZ.synth && window.JZZ.synth.OSC) {
-    midiOut = window.JZZ.synth.OSC();
-  } else if (window.JZZ.synth && window.JZZ.synth.Tiny) {
-    midiOut = window.JZZ.synth.Tiny();
-  } else {
-    midiOut = window.JZZ().openMidiOut();
+async function playCssNote(keyEl) {
+  if (!keyEl) return;
+  await ensureAudioRunning();
+  const midiNote = Number(keyEl.dataset.midi || 60);
+  keyEl.classList.add('is-playing');
+  const synth = await ensureToneChain();
+  if (synth) {
+    synth.triggerAttackRelease(Tone.Frequency(midiNote, 'midi'), '8n');
+    flashCssStatus(keyEl.dataset.noteFull || 'Key');
+    setTimeout(() => releaseCssNote(keyEl), 300);
+    pingPianoVu();
+    animatePianoWave(midiNote);
+    return;
   }
-  } catch (err) {
-    console.error('MIDI init failed', err);
-    midiOut = null;
-  }
-  return midiOut;
+  // fallback to raw WebAudio if Tone is unavailable
+  const freq = freqFromMidi(midiNote);
+  const osc = audio.createOscillator();
+  const gain = audio.createGain();
+  osc.frequency.value = freq;
+  osc.type = waveSelect?.value || 'triangle';
+  gain.gain.value = 0;
+  osc.connect(gain).connect(audio.destination);
+  const now = audio.currentTime;
+  gain.gain.linearRampToValueAtTime(0.32, now + 0.02);
+  gain.gain.setTargetAtTime(0.12, now + 0.12, 0.08);
+  osc.start(now);
+  cssOscByKey.set(keyEl, { osc, gain });
+  flashCssStatus(keyEl.dataset.noteFull || 'Key');
+  pingPianoVu();
+  animatePianoWave(midiNote);
+  setTimeout(() => releaseCssNote(keyEl), 400);
 }
 
-function sendProgramChange(program = 0, msb = 0, lsb = 0) {
-  const out = initMidi();
-  if (!out) return;
-  try {
-    out.control(0, 0, msb);
-    out.control(0, 32, lsb);
-    out.program(0, program);
-    currentProgram = program;
-    meta.textContent = `Program ${program}`;
-  } catch (err) {
-    console.error(err);
-  }
+function bindCssPiano() {
+  if (cssPianoBound) return;
+  cssPianoBound = true;
+  ensureCssPianoMounted();
+  assignCssPianoNotes();
+  cssKeys.forEach(key => {
+    key.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      playCssNote(key);
+    });
+    key.addEventListener('pointerup', () => releaseCssNote(key));
+    key.addEventListener('pointerleave', () => releaseCssNote(key));
+    key.addEventListener('pointercancel', () => releaseCssNote(key));
+    key.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      playCssNote(key);
+    }, { passive: false });
+    key.addEventListener('touchend', () => releaseCssNote(key));
+  });
 }
 
-function noteOn(noteNum, velocity = 100) {
-  const out = initMidi();
-  if (!out) return;
-  try { out.noteOn(0, noteNum, velocity); } catch (err) { console.error(err); }
-}
-function noteOff(noteNum) {
-  const out = initMidi();
-  if (!out) return;
-  try { out.noteOff(0, noteNum); } catch (err) { console.error(err); }
-}
-
-function resetMidiOut() {
-  midiOut = null;
-  initMidi();
-  sendProgramChange(currentProgram, Number(bankMsbSel?.value || 0), Number(bankLsbSel?.value || 0));
-  ensureQwerty(scaleModeSelect?.value || 'chromatic');
-}
+const cssOscByKey = new Map();
 
 async function playPad(padIndex, padConfig) {
   if (!padConfig || padConfig.sampleId == null) {
@@ -309,29 +489,23 @@ async function playPad(padIndex, padConfig) {
   stopPad(padIndex);
 
   const sampleId = padConfig.sampleId;
-  const buf = await getPlayableBuffer(sampleId, padConfig.reverse === true || padConfig.reverse === 'true');
+  const pitch = Number(padConfig.pitch ?? 0) || 0;
+  const looping = (padConfig.looping === true || padConfig.looping === 'true') && !(padConfig.oneshot === true || padConfig.oneshot === 'true');
 
+  const buf = await getPlayableBuffer(sampleId, padConfig.reverse === true || padConfig.reverse === 'true');
   const src = audio.createBufferSource();
   src.buffer = buf;
-  src.loop = (padConfig.looping === true || padConfig.looping === 'true');
-  // oneshot disables looping
-  if (padConfig.oneshot === true || padConfig.oneshot === 'true') src.loop = false;
-
-  // pitch in semitones -> playbackRate
-  const pitch = Number(padConfig.pitch ?? 0) || 0;
+  src.loop = looping;
   src.playbackRate.value = Math.pow(2, pitch / 12);
-
   const nodes = connectSimpleChain(src, padConfig);
-
   src.onended = () => {
     const cur = activeByPad.get(padIndex);
     if (cur && cur.src === src) activeByPad.delete(padIndex);
   };
-
   activeByPad.set(padIndex, { src, gain: nodes.gain, pan: nodes.pan });
   src.start();
   pingVuActivity();
-  meta.textContent = `Pad ${padIndex} ▶ ${sampleLabel(sampleId)} | vol ${Number(padConfig.vol ?? 1).toFixed(2)} | pitch ${Number(padConfig.pitch ?? 0)} st | pan ${Number(padConfig.pan ?? 0)}`;
+  meta.textContent = `Pad ${padIndex} ▶ ${sampleLabel(sampleId)} | vol ${Number(padConfig.vol ?? 1).toFixed(2)} | pitch ${pitch} st | pan ${Number(padConfig.pan ?? 0)}`;
 }
 
 function clearSelected() {
@@ -359,8 +533,12 @@ function makePadButton(i, padConfig) {
   const sub = document.createElement('div');
   sub.className = 'padSub';
   sub.textContent = padConfig ? sampleLabel(padConfig.sampleId) : 'empty';
+   // placeholder block for pad name
+  const blocker = document.createElement('div');
+  blocker.className = 'padNameBlock';
+  blocker.textContent = sub.textContent;
 
-  b.append(top, sub);
+  b.append(top, sub, blocker);
 
   b.addEventListener('click', async () => {
     try {
@@ -398,6 +576,21 @@ function makePadButton(i, padConfig) {
     renderSampleList(listIds);
 
     meta.textContent = 'Ready.';
+    currentInstrument = 'sampler';
+
+    // load sequencer state
+    try {
+      const res = await fetch('./sequence.json');
+      if (res.ok) {
+        sequenceState = await res.json();
+        seqBpmDisplay.textContent = sequenceState.bpm || 120;
+        currentSeqId = sequenceState.currSequenceId || 0;
+        renderSeqSlots(sequenceState.sequences || []);
+        renderSeqGrid(sequenceState.sequences?.[currentSeqId]);
+      }
+    } catch (err) {
+      console.warn('Failed to load sequence.json', err);
+    }
   } catch (err) {
     meta.textContent = `ERROR: ${err?.message ?? String(err)}`;
     throw err;
@@ -419,10 +612,6 @@ const sampleListEl = document.getElementById('sampleList');
 let vuTimeout = null;
 let drawerTimer = null;
 let pianoTimer = null;
-let midiOut = null;
-let currentProgram = 0;
-let currentOutType = 'osc';
-let qwertyInput = null;
 
 function drawWaveform(buffer, canvas = waveformCanvas) {
   if (!buffer || !waveCtx || !canvas) return;
@@ -493,30 +682,36 @@ async function renderSampleList(sampleIds) {
   const ids = (sampleIds && sampleIds.length ? sampleIds : allSampleIds);
   for (const sid of ids) {
     const c = document.createElement('canvas');
-    c.width = 72; c.height = 24; c.style.width = '100%'; c.style.height = 'auto';
+    c.width = 200; c.height = 64; c.style.width = '100%'; c.style.height = 'auto';
     c.dataset.sampleId = sid;
     const wrap = document.createElement('div');
+    wrap.className = 'sampleCard';
     wrap.style.cursor = 'pointer';
-    wrap.style.borderRadius = '6px';
-    wrap.style.overflow = 'hidden';
-    wrap.style.background = 'rgba(0,0,0,0.06)';
     wrap.appendChild(c);
     const label = document.createElement('div');
     label.className = 'sampleLabel';
     label.textContent = sampleLabel(sid);
-    label.style.fontSize = '11px';
-    label.style.padding = '4px 6px 6px';
-    label.style.color = 'rgba(255,255,255,0.8)';
-    wrap.appendChild(label);
     sampleListEl.appendChild(wrap);
     try {
       const buf = await getBuffer(sid);
       const ctx = c.getContext('2d');
-      ctx.fillStyle = '#002b2f'; ctx.fillRect(0,0,c.width,c.height);
-      ctx.strokeStyle = '#00e5ff'; ctx.beginPath();
+      ctx.fillStyle = 'rgba(0,20,20,0.9)';
+      ctx.fillRect(0,0,c.width,c.height);
+      ctx.strokeStyle = '#00e5ff';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
       const data = buf.getChannelData(0);
       const step = Math.max(1, Math.floor(data.length / c.width));
-      for (let i=0;i<c.width;i++){ const v = data[i*step]||0; const y = (1-(v+1)/2)*c.height; if(i===0)ctx.moveTo(i,y);else ctx.lineTo(i,y);} ctx.stroke();
+      for (let i=0;i<c.width;i++){
+        const v = data[i*step]||0;
+        const y = (1-(v+1)/2)*c.height;
+        if(i===0)ctx.moveTo(i,y);else ctx.lineTo(i,y);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 0.3;
+      ctx.fillStyle = 'rgba(0,255,180,0.2)';
+      ctx.fillRect(0, c.height/2, c.width, 1);
+      ctx.globalAlpha = 1;
     } catch (err) {
       // ignore
     }
@@ -608,56 +803,19 @@ window.addEventListener('keyup', (e) => {
   if (e.key === 'Escape') {
     setSampleDrawer(false);
     setPianoOverlay(false);
+    setSequencerOverlay(false);
   }
 });
-if (btnPianoMode) btnPianoMode.addEventListener('click', () => { setPianoOverlay(true); buildPiano(scaleModeSelect?.value || 'chromatic'); });
+if (btnPianoMode) btnPianoMode.addEventListener('click', () => { setInstrument('piano'); });
 if (btnClosePianoOverlay) btnClosePianoOverlay.addEventListener('click', () => setPianoOverlay(false));
-if (scaleModeSelect) scaleModeSelect.addEventListener('change', () => buildPiano(scaleModeSelect.value));
-
-const programOptions = [
-  { value: 0, label: '00 Acoustic Grand Piano' },
-  { value: 4, label: '04 Electric Piano 1' },
-  { value: 16, label: '16 Drawbar Organ' },
-  { value: 24, label: '24 Nylon Guitar' },
-  { value: 32, label: '32 Acoustic Bass' },
-  { value: 40, label: '40 Violin' },
-  { value: 48, label: '48 Strings' },
-  { value: 56, label: '56 Trumpet' },
-  { value: 64, label: '64 Soprano Sax' },
-  { value: 73, label: '73 Flute' },
-  { value: 80, label: '80 Square Lead' },
-  { value: 88, label: '88 New Age Pad' }
-];
-
-function hydrateProgramSelect() {
-  if (!programSelect) return;
-  programSelect.innerHTML = '';
-  programOptions.forEach(opt => {
-    const o = document.createElement('option');
-    o.value = String(opt.value);
-    o.textContent = opt.label;
-    programSelect.appendChild(o);
-  });
-  programSelect.value = String(currentProgram);
-}
-
-hydrateProgramSelect();
-if (programSelect) programSelect.addEventListener('change', () => {
-  const p = Number(programSelect.value || 0);
-  sendProgramChange(p, Number(bankMsb?.value || 0), Number(bankLsb?.value || 0));
-});
-
-if (midiOutSelect) midiOutSelect.addEventListener('change', () => { currentOutType = midiOutSelect.value; resetMidiOut(); });
-if (bankMsbSel) bankMsbSel.addEventListener('change', () => sendProgramChange(Number(programSelect?.value || 0), Number(bankMsbSel.value || 0), Number(bankLsbSel?.value || 0)));
-if (bankLsbSel) bankLsbSel.addEventListener('change', () => sendProgramChange(Number(programSelect?.value || 0), Number(bankMsbSel?.value || 0), Number(bankLsbSel.value || 0)));
-
-const knobCcMap = {
-  volume: 7,
-  pan: 10,
-  limiter: 91,
-  crunch: 12,
-  power: 13
-};
+if (scaleModeSelect) scaleModeSelect.addEventListener('change', () => flashCssStatus(`Scale: ${scaleModeSelect.value}`));
+if (octaveSelect) octaveSelect.addEventListener('change', () => { assignCssPianoNotes(); flashCssStatus(`Octave ${octaveSelect.value}`); });
+if (waveSelect) waveSelect.addEventListener('change', () => { flashCssStatus(`Wave ${waveSelect.value}`); });
+if (btnBackToSampler) btnBackToSampler.addEventListener('click', () => { setInstrument('sampler'); });
+if (btnSequenceMode) btnSequenceMode.addEventListener('click', () => { stopAll(); setSequencerOverlay(true); currentInstrument = 'sequencer'; });
+if (btnCloseSequencer) btnCloseSequencer.addEventListener('click', () => setSequencerOverlay(false));
+if (seqSlots.length) seqSlots.forEach((btn, idx) => btn.addEventListener('click', () => { currentSeqId = idx; renderSeqSlots(sequenceState?.sequences || []); renderSeqGrid(sequenceState?.sequences?.[idx]); }));
+if (btnSeqToPiano) btnSeqToPiano.addEventListener('click', () => setInstrument('piano'));
 
 function setKnobValue(el, value) {
   const clamped = Math.max(0, Math.min(127, value));
@@ -665,11 +823,7 @@ function setKnobValue(el, value) {
   el.style.setProperty('--knob-deg', `${deg}deg`);
   el.dataset.val = clamped;
   const param = el.dataset.param;
-  const cc = knobCcMap[param];
-  if (cc !== undefined) {
-    const out = initMidi();
-    try { out?.control(0, cc, clamped); } catch {}
-  }
+  applyPianoControl(param, clamped);
 }
 
 knobFaces.forEach(el => {
@@ -703,10 +857,6 @@ const keyMap = new Map([
 ]);
 
 window.addEventListener('keydown', async (e) => {
-  if (pianoOverlay && pianoOverlay.classList.contains('open') && qwertyInput) {
-    // Let JZZ.input.Qwerty handle keystrokes
-    return;
-  }
   if (e.repeat) return;
   if (e.code === 'Space') { e.preventDefault(); stopAll(); return; }
   const t = e.target;
@@ -714,6 +864,12 @@ window.addEventListener('keydown', async (e) => {
   const k = (e.key || '').toLowerCase();
   if (!keyMap.has(k)) return;
   e.preventDefault();
+  if (currentInstrument === 'piano') {
+    const idx = keyMap.get(k) % cssKeys.length;
+    const keyEl = cssKeys[idx];
+    if (keyEl) playCssNote(keyEl);
+    return;
+  }
   const padIndex = keyMap.get(k);
   const padConfig = pads.get(padIndex) ?? ensurePadExists(padIndex);
   selectPadButton(padIndex);

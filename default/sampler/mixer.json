@@ -1,0 +1,69 @@
+{
+	"buses": [
+		{
+			"chain": [
+				null,
+				null,
+				null,
+				null,
+				null
+			],
+			"mute": false,
+			"name": "BUS A",
+			"solo": false,
+			"volume": 1.0
+		},
+		{
+			"chain": [
+				null,
+				null,
+				null,
+				null,
+				null
+			],
+			"mute": false,
+			"name": "BUS B",
+			"solo": false,
+			"volume": 1.0
+		},
+		{
+			"chain": [
+				null,
+				null,
+				null,
+				null,
+				null
+			],
+			"mute": false,
+			"name": "BUS C",
+			"solo": false,
+			"volume": 1.0
+		},
+		{
+			"chain": [
+				null,
+				null,
+				null,
+				null,
+				null
+			],
+			"mute": false,
+			"name": "BUS D",
+			"solo": false,
+			"volume": 1.0
+		}
+	],
+	"master": {
+		"chain": [
+			null,
+			null,
+			null,
+			null,
+			null
+		],
+		"mute": false,
+		"name": "MAIN",
+		"solo": false,
+		"volume": 1.0
+	}
+}
