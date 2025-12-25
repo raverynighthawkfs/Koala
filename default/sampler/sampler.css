@@ -389,6 +389,8 @@ body{
   width: 100% !important;
   height: 100% !important;
   display:block;
+  position: relative;
+  z-index: 2;
 }
 .piano-key{
   height: 40vh;
@@ -433,6 +435,109 @@ body{
   opacity: 0.25;
   pointer-events: none;
 }
+
+/* CSS fallback piano (decorative) */
+.css-piano{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 18px;
+  pointer-events: none;
+  opacity: 0.2;
+  transition: opacity .25s ease, filter .25s ease;
+  z-index: 1;
+}
+.css-piano.is-active{
+  opacity: 0.6;
+  filter: drop-shadow(0 0 24px rgba(57,255,20,0.45));
+}
+.css-piano__deck{
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(12,16,20,0.95), rgba(4,10,14,0.9));
+  border: 2px solid rgba(57,255,20,0.45);
+  box-shadow: inset -10px -10px 20px rgba(255,255,255,0.03), inset 12px 12px 20px rgba(0,0,0,0.7);
+  padding: 14px 14px 24px;
+  overflow: hidden;
+}
+.css-piano__glow{
+  position: absolute;
+  inset: -40% -10%;
+  background: radial-gradient(circle at 50% 30%, rgba(57,255,20,0.25), rgba(0,0,0,0));
+  filter: blur(24px);
+  opacity: 0.65;
+}
+.css-piano__brand{
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245,255,245,0.45);
+}
+.css-piano__keys{
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  height: 200px;
+}
+.css-piano__whites{
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  width: 100%;
+  gap: 6px;
+  padding: 8px 10px 4px;
+}
+.css-piano__blacks{
+  position: absolute;
+  inset: 0 10px 32%;
+  display: block;
+}
+.css-key.white{
+  display: block;
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #0e141c 0%, #05080c 100%);
+  border: 2px solid rgba(57,255,20,0.6);
+  box-shadow: -6px -6px 12px rgba(255,255,255,0.03), 6px 6px 14px rgba(0,0,0,0.65);
+}
+.css-key.white:nth-child(odd){
+  background: linear-gradient(180deg, #0f191f 0%, #05090f 100%);
+}
+.css-key.black{
+  position: absolute;
+  width: calc((100% / 14) * 0.72);
+  height: 64%;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #04080c 0%, #010305 100%);
+  border: 2px solid rgba(57,255,20,0.55);
+  box-shadow: -4px -4px 10px rgba(255,255,255,0.03), 6px 8px 16px rgba(0,0,0,0.75);
+  left: calc(((var(--i) + 0.78) / 14) * 100%);
+  transform: translateX(-50%);
+}
+.css-piano__status{
+  position: absolute;
+  left: 14px;
+  bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(57,255,20,0.5);
+  background: rgba(6,10,14,0.92);
+  color: var(--text);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity .2s ease;
+  pointer-events: none;
+}
+.css-piano__status.show{ opacity: 0.9; }
 
 .actions{
   display:flex;

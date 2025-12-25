@@ -234,7 +234,33 @@
         </div>
 
         <div class="piano-body">
-          <div id="pianoKeys" class="piano-keys"></div>
+          <div id="pianoKeys" class="piano-keys">
+            <div id="cssPiano" class="css-piano" aria-hidden="true">
+              <div class="css-piano__deck">
+                <div class="css-piano__glow"></div>
+                <div class="css-piano__brand">Aizen Keys</div>
+                <div class="css-piano__keys">
+                  <div class="css-piano__whites">
+                    <span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span>
+                    <span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span><span class="css-key white"></span>
+                  </div>
+                  <div class="css-piano__blacks">
+                    <span class="css-key black" style="--i:0"></span>
+                    <span class="css-key black" style="--i:1"></span>
+                    <span class="css-key black" style="--i:3"></span>
+                    <span class="css-key black" style="--i:4"></span>
+                    <span class="css-key black" style="--i:5"></span>
+                    <span class="css-key black" style="--i:7"></span>
+                    <span class="css-key black" style="--i:8"></span>
+                    <span class="css-key black" style="--i:10"></span>
+                    <span class="css-key black" style="--i:11"></span>
+                    <span class="css-key black" style="--i:12"></span>
+                  </div>
+                </div>
+              </div>
+              <div id="cssPianoStatus" class="css-piano__status" role="status"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

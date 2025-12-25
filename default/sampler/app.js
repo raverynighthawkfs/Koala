@@ -17,6 +17,8 @@ const bankLsbSel = document.getElementById('bankLsb');
 const programSelect = document.getElementById('programSelect');
 const midiOutSelect = document.getElementById('midiOutSelect');
 const vuWindow = document.getElementById('vuWindow');
+const cssPiano = document.getElementById('cssPiano');
+const cssPianoStatus = document.getElementById('cssPianoStatus');
 
 // WebAudio
 const audio = new (window.AudioContext || window.webkitAudioContext)();
@@ -187,10 +189,18 @@ function noteIndexFromName(name) {
   return octave * 12 + semitone;
 }
 
+function toggleCssPiano(show, message = '') {
+  if (cssPiano) cssPiano.classList.toggle('is-active', !!show);
+  if (cssPianoStatus) {
+    cssPianoStatus.textContent = message || '';
+    cssPianoStatus.classList.toggle('show', !!show && !!message);
+  }
+}
+
 function ensureQwerty(scale = 'chromatic', force = false) {
   if (!pianoKeysEl || !window.JZZ || !JZZ.input || !JZZ.input.Qwerty) {
     console.warn('Qwerty keyboard unavailable (JZZ.input.Qwerty missing).');
-    if (pianoKeysEl) pianoKeysEl.textContent = 'Keyboard unavailable — JZZ.input.Qwerty not loaded.';
+    toggleCssPiano(true, 'Keyboard unavailable — showing CSS piano only.');
     return;
   }
   if (force && qwertyInput) {
@@ -201,7 +211,9 @@ function ensureQwerty(scale = 'chromatic', force = false) {
   const w = Math.max(900, pianoKeysEl.clientWidth || Math.round(window.innerWidth * 0.9) || 900);
   const h = Math.max(360, pianoKeysEl.clientHeight || Math.round(window.innerHeight * 0.5) || 360);
   if (!qwertyInput) {
+    const fallback = cssPiano;
     pianoKeysEl.innerHTML = '';
+    if (fallback) pianoKeysEl.appendChild(fallback);
     qwertyInput = JZZ.input.Qwerty({
       at: pianoKeysEl,
       w,
@@ -220,6 +232,7 @@ function ensureQwerty(scale = 'chromatic', force = false) {
       scale
     });
   }
+  toggleCssPiano(false);
   try {
     qwertyInput.disconnect();
     qwertyInput.connect(initMidi());
