@@ -90,6 +90,10 @@
 
         <div class="panel-body">
           <div class="audio-window">
+            <div class="audio-tabs">
+              <button id="tabSample" class="tab-btn active" type="button">SAMPLE</button>
+              <button id="tabEdit" class="tab-btn" type="button">EDIT</button>
+            </div>
             <div class="audio-window-title">Audio Editor Window</div>
             <div id="vuWindow" class="vu-window" aria-label="Visual volume display">
               <div class="bars">
@@ -101,37 +105,57 @@
                 <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
               </div>
             </div>
+            <div class="audio-panels">
+              <div id="panelSample" class="audio-panel active">
+                <div class="eq-placeholder">EQ / FILTER (UI placeholder)</div>
+                <div class="eq-actions">
+                  <button class="eq-pill">ENABLED</button>
+                  <button class="eq-pill ghost">RESET EQ</button>
+                  <button class="eq-pill">MAIN</button>
+                </div>
+              </div>
+              <div id="panelEdit" class="audio-panel">
+                <pre class="meta meta-edit" aria-label="Sample meta info"></pre>
+              </div>
+            </div>
           </div>
 
-          <canvas id="waveform" width="720" height="120"></canvas>
-
-          <div class="panel-buttons">
-            <button id="prevSample" class="mdui-btn" aria-label="Previous Sample">◀</button>
-            <button id="oneShot" class="mdui-btn" aria-pressed="false">ONE SHOT</button>
-            <button id="reverse" class="mdui-btn" aria-pressed="false">REVERSE</button>
-            <button id="loop" class="mdui-btn" aria-pressed="false">LOOP</button>
-            <button id="nextSample" class="mdui-btn" aria-label="Next Sample">▶</button>
+          <div class="wave-wrap">
+            <div id="waveInfo" class="wave-info"></div>
+            <canvas id="waveform" width="720" height="140"></canvas>
           </div>
 
-          <div class="panel-controls">
-            <div>
+          <div class="panel-buttons pill-row">
+            <button id="prevSample" class="pill-btn" aria-label="Previous Sample">◀</button>
+            <button id="oneShot" class="pill-btn" aria-pressed="false">ONE SHOT</button>
+            <button id="reverse" class="pill-btn" aria-pressed="false">REVERSE</button>
+            <button id="loop" class="pill-btn" aria-pressed="false">LOOP</button>
+            <button id="nextSample" class="pill-btn" aria-label="Next Sample">▶</button>
+          </div>
+
+          <div class="panel-controls circle-row">
+            <div class="circle-control">
               <label for="vol">VOL</label>
               <input id="vol" type="range" min="0" max="2" step="0.01" value="1">
             </div>
-            <div>
+            <div class="circle-control">
               <label for="pitch">PITCH</label>
               <input id="pitch" type="range" min="-12" max="12" step="0.1" value="0">
             </div>
-            <div>
+            <div class="circle-control">
               <label for="pan">PAN</label>
               <input id="pan" type="range" min="-1" max="1" step="0.01" value="0">
+            </div>
+            <div class="edit-stack">
+              <button id="editSample" class="pill-btn">EDIT</button>
+              <button id="deleteSample" class="pill-btn danger">DELETE</button>
             </div>
           </div>
 
           <div class="panel-tank">
-            <button id="openSampleDrawer" class="mdui-btn" type="button">
+            <button id="openSampleDrawer" class="pill-btn" type="button">
               <span class="material-symbols-outlined" slot="icon">unfold_more</span>
-              Sample Tank
+              SAMPLE TANK
             </button>
           </div>
 

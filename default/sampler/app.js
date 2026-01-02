@@ -35,6 +35,11 @@ const fxOverlay = document.getElementById('fxOverlay');
 const btnFxMode = document.getElementById('fxMode');
 const btnCloseFx = document.getElementById('closeFx');
 const pianoSampleLabel = document.getElementById('pianoSampleLabel');
+const tabSample = document.getElementById('tabSample');
+const tabEdit = document.getElementById('tabEdit');
+const panelSample = document.getElementById('panelSample');
+const panelEdit = document.getElementById('panelEdit');
+const waveInfo = document.getElementById('waveInfo');
 const cssPiano = document.getElementById('cssPiano');
 const cssPianoStatus = document.getElementById('cssPianoStatus');
 const cssKeys = Array.from(document.querySelectorAll('.css-key'));
@@ -761,11 +766,13 @@ async function showPadDetails(padIndex) {
   const pad = pads.get(padIndex) ?? null;
   if (!pad) {
     meta.textContent = 'Empty pad.';
+    if (waveInfo) waveInfo.textContent = '';
     return;
   }
   if (pad.sampleId == null) {
     meta.textContent = `Pad ${padIndex} — no sample selected. Pick one from the Sample Tank.`;
     if (waveCtx) waveCtx.clearRect(0,0,waveformCanvas.width,waveformCanvas.height);
+    if (waveInfo) waveInfo.textContent = '';
     return;
   }
   // update controls from pad
@@ -780,6 +787,11 @@ async function showPadDetails(padIndex) {
     const buf = await getBuffer(pad.sampleId);
     drawWaveform(buf);
     meta.textContent = `Pad ${padIndex} — ${sampleLabel(pad.sampleId)}`;
+    if (waveInfo) {
+      const len = buf.duration || 0;
+      const sr = buf.sampleRate || 0;
+      waveInfo.textContent = `START: 0 / END: ${buf.length}\nLENGTH: ${len.toFixed(2)}s\n${sampleLabel(pad.sampleId)}\nID: ${pad.sampleId}`;
+    }
   } catch (err) {
     meta.textContent = `ERROR: ${err?.message ?? String(err)}`;
   }
@@ -934,6 +946,16 @@ if (seqBarsSel) seqBarsSel.addEventListener('change', () => { seqBars = Number(s
 if (btnMixerTab) btnMixerTab.addEventListener('click', () => { meta.textContent = 'Mixer tab (stub)'; });
 if (btnFxMode) btnFxMode.addEventListener('click', () => setFxOverlay(true));
 if (btnCloseFx) btnCloseFx.addEventListener('click', () => setFxOverlay(false));
+if (tabSample && tabEdit) {
+  const activateTab = (isSample) => {
+    tabSample.classList.toggle('active', isSample);
+    tabEdit.classList.toggle('active', !isSample);
+    panelSample?.classList.toggle('active', isSample);
+    panelEdit?.classList.toggle('active', !isSample);
+  };
+  tabSample.addEventListener('click', () => activateTab(true));
+  tabEdit.addEventListener('click', () => activateTab(false));
+}
 
 function setKnobValue(el, value) {
   const clamped = Math.max(0, Math.min(127, value));
